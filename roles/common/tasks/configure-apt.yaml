@@ -1,0 +1,41 @@
+---
+
+# Set apt in Ubuntu
+
+- name: Turn on updates and backports repositories
+  replace:
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.replace }}"
+  become: yes
+  with_items:
+    - { regexp: '//\s"\${distro_id}:\${distro_codename}-updates";', replace: '\t"${distro_id}:${distro_codename}-updates";' }
+    - { regexp: '//\s"\${distro_id}:\${distro_codename}-backports";', replace: '\t"${distro_id}:${distro_codename}-backports";' }
+
+- name: Change settings for unattended-upgrades
+  replace:
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.replace }}"
+  become: yes
+  with_items:
+    - { regexp: '//Unattended-Upgrade::MinimalSteps "true";', replace: 'Unattended-Upgrade::MinimalSteps "true";' }
+    - { regexp: '//Unattended-Upgrade::Remove-Unused-Dependencies "false";', replace: 'Unattended-Upgrade::Remove-Unused-Dependencies "true";'}
+
+- name: Set unattended-upgrades frequency
+  replace:
+    dest: /etc/apt/apt.conf.d/10periodic
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.replace }}"
+  become: yes
+  with_items:
+    - { regexp: 'APT::Periodic::Download-Upgradeable-Packages "0";', replace: 'APT::Periodic::Download-Upgradeable-Packages "1";' }
+    - { regexp: 'APT::Periodic::AutocleanInterval "0";', replace: 'APT::Periodic::AutocleanInterval "1";' }
+
+- name: Turn on unattended-upgrades
+  lineinfile:
+    dest: /etc/apt/apt.conf.d/10periodic
+    line: 'APT::Periodic::Unattended-Upgrade "1";'
+    insertafter: EOF
+    state: present
+  become: yes
