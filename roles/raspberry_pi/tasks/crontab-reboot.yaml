@@ -1,0 +1,12 @@
+---
+
+# Set up a cron job to reboot the pi
+
+- name: Add crontab entry to reboot the machine at 0100 every night
+  cron:
+    name: 'Reboot at 1AM every night, otherwise the Pi locks up after a few days'
+    job: '/sbin/reboot | logger -i -t "nightly reboot"'
+    minute: 0
+    hour: 1
+    state: present
+  become: yes
