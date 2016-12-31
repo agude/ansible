@@ -1,0 +1,26 @@
+---
+
+# Set up NTP and various cron jobs to update the time
+
+- name: Update apt cache and install the "ntpdate"
+  apt:
+    name: ntpdate
+    update_cache: yes
+    state: latest
+    cache_valid_time: 3600
+  become: true
+
+- name: Run ntpdate to update the time
+  command: /usr/sbin/ntpdate -u pool.ntp.org
+  become: yes
+
+- name: Add crontab entries to automatically run ntpdate
+  cron:
+    name: "{{ item.name }}"
+    special_time: "{{ item.special_time }}"
+    job: "{{ item.job }}"
+    state: present
+  become: yes
+  with_items:
+    - { name: 'Update the clock on reboot', special_time: 'reboot', job: 'sleep 15 && /usr/sbin/ntpdate -u pool.ntp.org 2>&1 | logger -i -t "time update on boot"'}
+    - { name: 'Update the clock every hour', special_time: 'hourly', job: '/usr/sbin/ntpdate -u pool.ntp.org 2>&1 | logger -i -t "time update"'}
