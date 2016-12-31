@@ -1,0 +1,6 @@
+---
+
+  - include: configure-apt.yaml
+  - include: upgrade-packages.yaml
+  - include: sshd-harden.yaml
+  - include: dotfiles.yaml
