@@ -1,0 +1,35 @@
+---
+
+# Remove unneeded default packages
+
+- name: Remove unused default packages
+  apt:
+    name: "{{ item }}"
+    state: absent
+    purge: yes
+    autoremove: yes
+  become: yes
+  with_items:
+    - atril*
+    - avahi*
+    - brasero*
+    - cheese*
+    - deja-dup*
+    - hexchat*
+    - idle*
+    - libreoffice*
+    - minecraft-pi
+    - pidgin*
+    - plank
+    - pluma*
+    - qjackctl
+    - rhythmbox*
+    - scratch
+    - shotwell*
+    - simple-scan
+    - sonic-pi*
+    - synapse
+    - thunderbird*
+    - transmission*
+    - vlc*
+    - youtube-dl*
