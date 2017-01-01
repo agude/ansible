@@ -5,3 +5,4 @@
   - include: uninstall-unused.yaml
   - include: blacklist-wifi.yaml
     when: raspberry_pi_version == 3
+  - include: install-miniconda.yaml
