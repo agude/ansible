@@ -1,0 +1,12 @@
+---
+
+# Disable wifi by blacklisting the drivers
+
+- name: Blacklist wifi drivers
+  kernel_blacklist:
+    name: "{{ item }}"
+    state: present
+  become: yes
+  with_items:
+    - brcmfmac
+    - brcmutil
