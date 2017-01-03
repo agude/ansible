@@ -2,7 +2,7 @@
 
 # Set up NTP and various cron jobs to update the time
 
-- name: Update apt cache and install the "ntpdate"
+- name: Update apt cache and install "ntpdate"
   apt:
     name: ntpdate
     update_cache: yes
