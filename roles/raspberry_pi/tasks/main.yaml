@@ -6,3 +6,5 @@
   - include: blacklist-wifi.yaml
     when: raspberry_pi_version == 3
   - include: install-miniconda.yaml
+  - include: setup-deluge.yaml
+    when: torrent_server == true

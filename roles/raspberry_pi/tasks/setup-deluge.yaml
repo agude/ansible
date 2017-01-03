@@ -1,0 +1,46 @@
+---
+
+# Set up a headless Deluge server
+
+# Via http://dev.deluge-torrent.org/wiki/UserGuide/ThinClient
+- name: Update apt cache and install "deluged" and "deluge-console"
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: latest
+    cache_valid_time: 3600
+  become: true
+  with_items:
+    - deluged
+    - deluge-console
+
+- name: Set up the remote deluge user
+  copy:
+    src: roles/raspberry_pi/vault/auth
+    dest: "{{ ansible_env.HOME }}/.config/deluge/auth"
+    mode: "u=rw,go="
+
+- name: Set up deluged configuration
+  command: 'deluge-console "{{ item }}"'
+  with_items:
+    - "config -s allow_remote True"
+    - "config allow_remote"
+  register: result
+
+# Via http://dev.deluge-torrent.org/wiki/UserGuide/Service/systemd
+- name: Copying deluged systemd startup service config
+  template:
+    src: deluged.service.j2
+    dest: /etc/systemd/system/deluged.service
+    owner: root
+    group: root
+    mode: "u=rw,go=r"
+    backup: yes
+  become: yes
+
+- name: Enable and start deluged
+  systemd:
+    name: deluged.service
+    state: started
+    enabled: yes
+  become: yes
