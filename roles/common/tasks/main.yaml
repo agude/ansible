@@ -4,3 +4,4 @@
   - include: upgrade-packages.yaml
   - include: sshd-harden.yaml
   - include: dotfiles.yaml
+  - include: modify-sudo.yaml

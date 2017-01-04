@@ -1,0 +1,13 @@
+---
+
+# Modify sudo rights, allow rebooting without passwords
+
+- name: Add a sudoers file to allow passwordless shutdown
+  template:
+    src: shutdown.j2
+    dest: /etc/sudoers.d/shutdown
+    owner: root
+    group: root
+    mode: "0440"
+    validate: visudo -cf %s
+  become: yes
