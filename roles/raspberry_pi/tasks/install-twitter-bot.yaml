@@ -1,0 +1,42 @@
+---
+
+# Set up a Twitter API wrapper and various calls to it
+
+- name: Pip install Raspberry Pi Twitter Bot
+  pip:
+    name: git+git://github.com/agude/raspberry-pi-twitter-bot.git
+    state: forcereinstall
+    editable: false
+    executable: "{{ ansible_env.HOME }}/bin/miniconda/bin/pip"
+
+- name: Creating configuration directory
+  file:
+    path: "{{ ansible_env.HOME }}/.config/rpi-twitter"
+    state: directory
+    mode: "u=rwx,go="
+
+- name: Copying twitter keys and config
+  copy:
+    src: "roles/raspberry_pi/vault/config_{{ inventory_hostname }}.json"
+    dest: "{{ ansible_env.HOME }}/.config/rpi-twitter/config"
+    mode: "u=rw,go="
+
+- name: Add crontab entry to tweet when the machine powers on
+  cron:
+    name: 'Tweet after rebooting'
+    job: "sleep 10 && {{ ansible_env.HOME }}/bin/miniconda/bin/t -s 'Good morning! I just came back up from reboot!' 2>&1 | logger -i -t 'Twitter Bot: Reboot'"
+    special_time: reboot
+    state: present
+
+- name: Adding caltrain twitter module to crontab
+  cron:
+    name: 'Check Caltrain Status for {{ item.period }} commute'
+    hour: '{{ item.hour }}'
+    minute: '{{ item.minute }}'
+    weekday: 1-5
+    job: "{{ ansible_env.HOME }}/bin/miniconda/bin/caltrain-checker -t {{ item.trains }} nb -m caltrain -b {{ item.start }} -e {{ item.end }} -s -r alex_gude | logger -i -t 'Twitter Bot: Caltrain'"
+    state: present
+  with_items:
+    - { period: 'morning', trains: '227 nb', start: '6', end: '9', hour: '8', minute: '0,15,30' }
+    - { period: 'evening', trains: '264 268 sb', start: '15', end: '18', hour: '16,17', minute: '0,15,30,45' }
+  when: caltrain_module == true

@@ -2,3 +2,4 @@
 
 raspberry_pi_version: 3
 torrent_server: false
+caltrain_module: true

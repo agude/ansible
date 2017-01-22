@@ -3,8 +3,9 @@
   - include: setup-ntp.yaml
   - include: crontab-reboot.yaml
   - include: uninstall-unused.yaml
-  - include: blacklist-wifi.yaml
-    when: raspberry_pi_version == 3
   - include: install-miniconda.yaml
+  - include: install-twitter-bot.yaml
   - include: setup-deluge.yaml
     when: torrent_server == true
+  - include: blacklist-wifi.yaml
+    when: raspberry_pi_version == 3
