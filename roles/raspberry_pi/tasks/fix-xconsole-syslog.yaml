@@ -1,0 +1,16 @@
+---
+
+# Turn off error logging to /dev/xconsole, which doesn't exist
+
+# This prevents "rsyslogd-2007: action 'action 10' suspended, next retry is ..." syslog spam
+- name: Turning off logs sent to /dev/xconsole to prevent errors in syslog
+  replace:
+    dest: /etc/rsyslog.d/50-default.conf
+    regexp: "{{ item.regexp }}"
+    replace: "{{ item.replace }}"
+  become: true
+  with_items:
+    - { regexp: '^daemon[.][*][;]mail[.][*][;]\\', replace: '#daemon.*;mail.*;\\' }
+    - { regexp: '^\tnews[.]err;\\', replace: '#\tnews.err;\\' }
+    - { regexp: '^\t[*][.][=]debug[;][*][.][=]info[;]\\', replace: '#\t*.=debug;*.=info;\\' }
+    - { regexp: '^\t[*][.][=]notice[;][*][.][=]warn\t[|][/]dev[/]xconsole', replace: '#\t*.=notice;*.=warn   |/dev/xconsole' }
