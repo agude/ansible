@@ -2,7 +2,7 @@
 
 # Remove unneeded default packages
 
-- name: Remove unused default packages
+- name: Remove unused default packages on all Raspberry Pis
   apt:
     name: "{{ item }}"
     state: absent
@@ -34,3 +34,14 @@
     - transmission*
     - vlc*
     - youtube-dl*
+
+- name: Remove unused default packages on Raspberry Pi 3s
+  apt:
+    name: "{{ item }}"
+    state: absent
+    purge: yes
+    autoremove: yes
+  become: yes
+  when: raspberry_pi_version == 3
+  with_items:
+    - python-picraft*
