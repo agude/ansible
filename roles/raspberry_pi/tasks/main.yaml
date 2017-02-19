@@ -3,6 +3,7 @@
   - include: setup-ntp.yaml
   - include: fix-xconsole-syslog.yaml
   - include: crontab-reboot.yaml
+  - include: crontab-kernel-update.yaml
   - include: uninstall-unused.yaml
   - include: install-miniconda.yaml
   - include: install-twitter-bot.yaml
