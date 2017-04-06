@@ -15,6 +15,7 @@
     - brasero*
     - brltty
     - cheese*
+    - cups-daemon
     - deja-dup*
     - hexchat*
     - idle*
