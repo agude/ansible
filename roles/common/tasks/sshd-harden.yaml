@@ -3,6 +3,14 @@
 # Set up ssh to be secure as recommended by:
 # https://stribika.github.io/2015/01/04/secure-secure-shell.html
 
+- name: Install sshd
+  apt:
+    name: openssh-server
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  become: yes
+
 - name: Create an ssh group to restrict logins
   group:
     name: ssh-user
