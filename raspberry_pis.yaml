@@ -1,0 +1,7 @@
+- name: A playbook to setup up a Raspberry Pi
+  hosts:
+    - pion
+    - kaon
+  roles:
+    - common
+    - raspberry_pi
