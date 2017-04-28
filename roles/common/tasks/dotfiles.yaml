@@ -32,3 +32,18 @@
   args:
     chdir: "{{ ansible_env.HOME }}/.dotfiles/"
     executable: /bin/bash
+
+# Also install for root user
+- name: Clone dotfiles git repo for root
+  git:
+    repo: https://github.com/agude/dotfiles.git
+    dest: /root/.dotfiles
+    update: yes
+  become: yes
+
+- name: Run the dotfiles installer in ".dotfiles" for root
+  shell: /root/.dotfiles/install.sh
+  args:
+    chdir: /root/.dotfiles
+    executable: /bin/bash
+  become: yes
