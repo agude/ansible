@@ -1,0 +1,12 @@
+---
+
+# Change removable drives to mount at /media/drive instead of /media/user/drive
+
+- name: Copying udev rules file to change USB mount points
+  template:
+    src: 99-udisks2.rules.j2
+    dest: /etc/udev/rules.d/99-udisks2.rules
+    owner: root
+    group: root
+    mode: "0600"
+  become: yes
