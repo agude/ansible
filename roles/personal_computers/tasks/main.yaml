@@ -1,5 +1,6 @@
 ---
 
   - include: create-users.yaml
+  - include: apt-remove.yaml
   - include: install.yaml
   - include: razer-deathadder-sensitivity.yaml
