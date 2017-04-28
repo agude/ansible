@@ -2,6 +2,14 @@
 
 # Set apt in Ubuntu
 
+- name: Install unattended-upgrades package
+  apt:
+    name: unattended-upgrades
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+
 - name: Turn on updates and backports repositories
   replace:
     dest: /etc/apt/apt.conf.d/50unattended-upgrades
@@ -22,20 +30,12 @@
     - { regexp: '//Unattended-Upgrade::MinimalSteps "true";', replace: 'Unattended-Upgrade::MinimalSteps "true";' }
     - { regexp: '//Unattended-Upgrade::Remove-Unused-Dependencies "false";', replace: 'Unattended-Upgrade::Remove-Unused-Dependencies "true";'}
 
-- name: Set unattended-upgrades frequency
-  replace:
-    dest: /etc/apt/apt.conf.d/10periodic
-    regexp: "{{ item.regexp }}"
-    replace: "{{ item.replace }}"
-  become: yes
-  with_items:
-    - { regexp: 'APT::Periodic::Download-Upgradeable-Packages "0";', replace: 'APT::Periodic::Download-Upgradeable-Packages "1";' }
-    - { regexp: 'APT::Periodic::AutocleanInterval "0";', replace: 'APT::Periodic::AutocleanInterval "1";' }
-
-- name: Turn on unattended-upgrades
-  lineinfile:
-    dest: /etc/apt/apt.conf.d/10periodic
-    line: 'APT::Periodic::Unattended-Upgrade "1";'
-    insertafter: EOF
-    state: present
+- name: Setting up /etc/apt/apt.conf.d/20auto-upgrades
+  template:
+    src: 20auto-upgrades.j2
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    owner: root
+    group: root
+    mode: "0644"
+    backup: yes
   become: yes
