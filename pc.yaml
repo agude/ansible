@@ -1,0 +1,7 @@
+- name: A playbook to setup up my personal computers
+  hosts:
+    - einstein
+    - dirac
+  roles:
+    - common
+    - personal_computers
