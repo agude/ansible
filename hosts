@@ -1,0 +1,14 @@
+# Machines
+einstein
+dirac
+pion
+kaon
+
+# Groups
+[rasberry_pis]
+pion
+kaon
+
+[personal_computers]
+einstein
+dirac
