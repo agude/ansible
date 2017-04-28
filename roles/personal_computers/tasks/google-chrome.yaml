@@ -1,0 +1,23 @@
+---
+
+- name: Add Google repository signing key
+  apt_key:
+    url: https://dl-ssl.google.com/linux/linux_signing_key.pub
+    state: present
+  become: yes
+
+- name: Add the Google repository
+  copy:
+    content: "deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main"
+    dest: "/etc/apt/sources.list.d/google-chrome.list"
+    mode: "u=rw,go=r"
+  become: yes
+  register: google_repo
+
+- name: Update apt cache and install "google-chrome-stable" package
+  apt:
+    name: google-chrome-stable
+    update_cache: yes
+    state: latest
+  become: yes
+  when: google_repo.changed
