@@ -2,6 +2,8 @@
 
 # Install Various programs
 
+- include_vars: vars/apt-packages.yaml
+
 - name: Apt install various programs
   apt:
     name: "{{ item }}"
@@ -9,13 +11,4 @@
     update_cache: yes
     cache_valid_time: 3600
   become: true
-  with_items:
-    - git
-    - graphicsmagick-imagemagick-compat
-    - openssh-blacklist
-    - openssh-blacklist-extra
-    - openssh-server
-    - pandoc
-    - pdftk
-    - pep8
-    - screen
+  with_items: "{{ packages.common }}"

@@ -1,0 +1,44 @@
+---
+
+packages:
+  common:
+    - git
+    - graphicsmagick-imagemagick-compat
+    - openssh-blacklist
+    - openssh-blacklist-extra
+    - openssh-server
+    - pandoc
+    - pdftk
+    - pep8
+    - screen
+  rpi:
+  pc:
+    - audacity
+    - backintime-gnome
+    - banshee
+    - build-essential
+    - compizconfig-settings-manager
+    - conky
+    - dconf-tools
+    - deluge
+    - exuberant-ctags
+    - getmail4
+    - gimp
+    - gnome-do
+    - gparted
+    - gpm
+    - homebank
+    - inkscape
+    - latexmk
+    - libxml2-utils
+    - lyx
+    - meld
+    - pidgin
+    - pidgin-otr
+    - python3
+    - python3-numpy
+    - python3-scipy
+    - ubuntu-restricted-*
+    - viking
+    - vim-gnome
+    - xclip
