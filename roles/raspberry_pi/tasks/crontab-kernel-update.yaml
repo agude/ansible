@@ -5,7 +5,7 @@
 - name: Add crontab entry to update the kernel
   cron:
     name: 'Run the kernel update script'
-    job: 'rpi-update'
+    job: 'rpi-update | logger -i -t "kernel update"'
     minute: 0
     hour: 0
     state: present
