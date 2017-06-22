@@ -2,6 +2,7 @@
 
   - include: create-users.yaml
   - include: apt-remove.yaml
+  - include: install-anaconda.yaml
   - include: install.yaml
   - include: google-chrome.yaml
   - include: change-usb-mount.yaml
