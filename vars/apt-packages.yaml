@@ -38,7 +38,11 @@ packages:
     - python3
     - python3-numpy
     - python3-scipy
+    - ruby
+    - ruby-all-dev
+    - rubygems
     - ubuntu-restricted-*
     - viking
     - vim-gnome
     - xclip
+    - zlib1g-dev 
