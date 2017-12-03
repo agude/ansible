@@ -7,3 +7,5 @@
   - include: google-chrome.yaml
   - include: change-usb-mount.yaml
   - include: razer-deathadder-sensitivity.yaml
+  - include: fix-lightdm-monitors.yaml
+    when: fix_lightdm_monitors == true

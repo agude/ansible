@@ -1,0 +1,13 @@
+---
+
+# Change removable drives to mount at /media/drive instead of /media/user/drive
+
+- name: Copying user monitors.xml to lightdm monitors.xml
+  template:
+    remote_src: true
+    src: /home/agude/.config/monitors.xml
+    dest: /var/lib/lightdm/.config/monitors.xml
+    owner: lightdm
+    group: lightdm
+    mode: u=rw,go=
+  become: yes
