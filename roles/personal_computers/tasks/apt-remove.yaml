@@ -10,6 +10,7 @@
   become: true
   with_items:
     - appmenu-qt*
+    - apport
     - brltty
     - deja-dup
     - gnome-mahjongg
