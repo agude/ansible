@@ -13,3 +13,8 @@
   args:
     chdir: /tmp
     creates: "{{ ansible_env.HOME }}/bin/miniconda"
+
+- name: Conda install pip
+  command: "{{ ansible_env.HOME }}/bin/miniconda/bin/conda install pip"
+  args:
+    creates: "{{ ansible_env.HOME }}/bin/miniconda/bin/pip"
