@@ -2,7 +2,7 @@
 
 # Install my dotfiles from Github
 
-- name: Update apt cache and install the "git" and "vim" packages
+- name: Update apt cache and install the "git", "curl", and "vim" packages
   apt:
     name: "{{ item }}"
     update_cache: yes
@@ -12,6 +12,7 @@
   with_items:
     - git
     - vim-gnome
+    - curl
 
 - name: Ensure github.com is a known host
   lineinfile:
