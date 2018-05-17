@@ -2,14 +2,21 @@
 
 # Install anaconda
 
+- name: Check if anaconda already exists
+  stat:
+    path: "{{ ansible_env.HOME }}/bin/anaconda"
+  register: stat_result
+
 - name: Download the anaconda package
   get_url:
-    url: https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh
+    url: https://repo.continuum.io/archive/Anaconda3-5.1.0-Linux-x86_64.sh
     dest: /tmp/Anaconda3.sh
     mode: "u+rwx"
+  when: stat_result.stat.exists == False
 
 - name: Install anaconda
   command: "./Anaconda3.sh -b -p {{ ansible_env.HOME }}/bin/anaconda"
   args:
     chdir: /tmp
     creates: "{{ ansible_env.HOME }}/bin/anaconda"
+  when: stat_result.stat.exists == False

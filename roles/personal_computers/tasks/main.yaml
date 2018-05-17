@@ -1,7 +1,7 @@
 ---
 
   - include: create-users.yaml
-  - include: apt-remove.yaml
+  - include: uninstall.yaml
   - include: install-anaconda.yaml
   - include: install.yaml
   - include: google-chrome.yaml
