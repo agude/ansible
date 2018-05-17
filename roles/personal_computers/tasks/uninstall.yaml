@@ -10,7 +10,7 @@
     state: absent
     purge: true
   become: true
-  with_items: "{{ remove.pc }}"
+  with_items: "{{ remove.pc.all }}"
 
 - name: Remove 16.04 specific unused default packages
   apt:
@@ -18,7 +18,7 @@
     state: absent
     purge: true
   become: true
-  with_items: "{{ remove.pc_xenial }}"
+  with_items: "{{ remove.pc.xenial }}"
   when:
     - ansible_distribution == "Ubuntu"
     - ansible_distribution_version == "16.04"

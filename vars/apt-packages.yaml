@@ -1,88 +1,91 @@
 ---
 
-packages:
+install:
   common:
-    - git
-    - graphicsmagick-imagemagick-compat
-    - openssh-server
-    - pandoc
-    - pep8
-    - screen
-  common_xenial:
-    - openssh-blacklist
-    - openssh-blacklist-extra
-    - pdftk
+    all:
+      - git
+      - graphicsmagick-imagemagick-compat
+      - openssh-server
+      - pandoc
+      - pep8
+      - screen
+    xenial:
+      - openssh-blacklist
+      - openssh-blacklist-extra
+      - pdftk
   rpi:
   pc:
-    - audacity
-    - backintime-gnome
-    - banshee
-    - build-essential
-    - conky
-    - dconf-tools
-    - deluge
-    - exuberant-ctags
-    - getmail4
-    - gimp
-    - gparted
-    - gpm
-    - homebank
-    - inkscape
-    - latexmk
-    - libxml2-utils
-    - lyx
-    - meld
-    - pidgin
-    - pidgin-otr
-    - ruby
-    - ruby-all-dev
-    - rubygems
-    - ubuntu-restricted-*
-    - viking
-    - vim-gnome
-    - xclip
-    - zlib1g-dev 
-  pc_xenial:
-    - compizconfig-settings-manager
-    - gnome-do
+    all:
+      - audacity
+      - backintime-gnome
+      - banshee
+      - build-essential
+      - conky
+      - dconf-tools
+      - deluge
+      - exuberant-ctags
+      - getmail4
+      - gimp
+      - gparted
+      - gpm
+      - homebank
+      - inkscape
+      - latexmk
+      - libxml2-utils
+      - lyx
+      - meld
+      - pidgin
+      - pidgin-otr
+      - ruby
+      - ruby-all-dev
+      - rubygems
+      - ubuntu-restricted-*
+      - viking
+      - vim-gnome
+      - xclip
+      - zlib1g-dev 
+    xenial:
+      - compizconfig-settings-manager
+      - gnome-do
 
 remove:
   common:
   common_xenial:
   rpi:
   pc:
-    - apport
-    - brltty
-    - deja-dup
-    - gnome-mahjongg
-    - gnome-orca
-    - gnome-sudoku
-    - indicator-appmenu
-    - overlay-scrollbar
-    - rhythmbox*
-    - transmission*
-    - thunderbird
-    - ubuntuone*
-    - gnome-mines
-  pc_xenial:
-    - appmenu-qt*
-    - unity-webapps*
-    - unity-scope-audacious
-    - unity-scope-chromiumbookmarks
-    - unity-scope-clementine
-    - unity-scope-colourlovers
-    - unity-scope-devhelp
-    - unity-scope-firefoxbookmarks
-    - unity-scope-gdrive
-    - unity-scope-gmusicbrowser
-    - unity-scope-gourmet
-    - unity-scope-guayadeque
-    - unity-scope-musicstores
-    - unity-scope-musique
-    - unity-scope-openclipart
-    - unity-scope-texdoc
-    - unity-scope-tomboy
-    - unity-scope-video-remote
-    - unity-scope-virtualbox
-    - unity-scope-yelp
-    - unity-scope-zotero
+    all:
+      - apport
+      - brltty
+      - deja-dup
+      - gnome-mahjongg
+      - gnome-orca
+      - gnome-sudoku
+      - indicator-appmenu
+      - overlay-scrollbar
+      - rhythmbox*
+      - transmission*
+      - thunderbird
+      - ubuntuone*
+      - gnome-mines
+    xenial:
+      - appmenu-qt*
+      - unity-webapps*
+      - unity-scope-audacious
+      - unity-scope-chromiumbookmarks
+      - unity-scope-clementine
+      - unity-scope-colourlovers
+      - unity-scope-devhelp
+      - unity-scope-firefoxbookmarks
+      - unity-scope-gdrive
+      - unity-scope-gmusicbrowser
+      - unity-scope-gourmet
+      - unity-scope-guayadeque
+      - unity-scope-musicstores
+      - unity-scope-musique
+      - unity-scope-openclipart
+      - unity-scope-texdoc
+      - unity-scope-tomboy
+      - unity-scope-video-remote
+      - unity-scope-virtualbox
+      - unity-scope-yelp
+      - unity-scope-zotero
