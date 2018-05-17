@@ -4,27 +4,26 @@ packages:
   common:
     - git
     - graphicsmagick-imagemagick-compat
-    - openssh-blacklist
-    - openssh-blacklist-extra
     - openssh-server
     - pandoc
-    - pdftk
     - pep8
     - screen
+  common_xenial:
+    - openssh-blacklist
+    - openssh-blacklist-extra
+    - pdftk
   rpi:
   pc:
     - audacity
     - backintime-gnome
     - banshee
     - build-essential
-    - compizconfig-settings-manager
     - conky
     - dconf-tools
     - deluge
     - exuberant-ctags
     - getmail4
     - gimp
-    - gnome-do
     - gparted
     - gpm
     - homebank
@@ -35,9 +34,6 @@ packages:
     - meld
     - pidgin
     - pidgin-otr
-    - python3
-    - python3-numpy
-    - python3-scipy
     - ruby
     - ruby-all-dev
     - rubygems
@@ -46,3 +42,6 @@ packages:
     - vim-gnome
     - xclip
     - zlib1g-dev 
+  pc_xenial:
+    - compizconfig-settings-manager
+    - gnome-do

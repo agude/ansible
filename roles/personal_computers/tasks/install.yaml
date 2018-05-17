@@ -12,3 +12,15 @@
     cache_valid_time: 3600
   become: true
   with_items: "{{ packages.pc }}"
+
+- name: Apt install 16.04 specific programs
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  with_items: "{{ packages.pc_xenial }}"
+  when:
+    - ansible_distribution == "Ubuntu"
+    - ansible_distribution_version == "16.04"
