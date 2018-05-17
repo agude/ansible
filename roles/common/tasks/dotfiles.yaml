@@ -1,6 +1,17 @@
 ---
 
 # Install my dotfiles from Github
+#
+- name: Check if user dotfiles already exists
+  stat:
+    path: "{{ ansible_env.HOME }}/.dotfiles/install.sh"
+  register: user_dotfiles
+
+- name: Check if root dotfiles already exists
+  stat:
+    path: "/root/.dotfiles/install.sh"
+  register: root_dotfiles
+  become: true
 
 - name: Update apt cache and install the "git", "curl", and "vim" packages
   apt:
@@ -27,6 +38,7 @@
     repo: ssh://git@github.com/agude/dotfiles.git
     dest: "{{ ansible_env.HOME }}/.dotfiles"
     update: yes
+  when: user_dotfiles.stat.exists == False
 
 - name: Run the dotfiles installer in ".dotfiles"
   shell: "{{ ansible_env.HOME }}/.dotfiles/install.sh"
@@ -41,6 +53,7 @@
     dest: /root/.dotfiles
     update: yes
   become: yes
+  when: root_dotfiles.stat.exists == False
 
 - name: Run the dotfiles installer in ".dotfiles" for root
   shell: /root/.dotfiles/install.sh
