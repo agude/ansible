@@ -20,6 +20,7 @@ install:
       - backintime-gnome
       - banshee
       - build-essential
+      - cmake
       - conky
       - dconf-tools
       - deluge
@@ -31,6 +32,11 @@ install:
       - homebank
       - inkscape
       - latexmk
+      - libgcrypt20-dev
+      - libmxml-dev
+      - libpurple-dev
+      - libsqlite3-dev
+      - libxml2-dev
       - libxml2-utils
       - lyx
       - meld
@@ -41,7 +47,7 @@ install:
       - viking
       - vim-gnome
       - xclip
-      - zlib1g-dev 
+      - zlib1g-dev
     xenial:
       - compizconfig-settings-manager
       - gnome-do
