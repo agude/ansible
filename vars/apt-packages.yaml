@@ -62,15 +62,17 @@ remove:
       - brltty
       - deja-dup
       - gnome-mahjongg
+      - gnome-mines
       - gnome-orca
       - gnome-sudoku
       - indicator-appmenu
+      - locate
+      - mlocate
       - overlay-scrollbar
       - rhythmbox*
-      - transmission*
       - thunderbird
+      - transmission*
       - ubuntuone*
-      - gnome-mines
     xenial:
       - appmenu-qt*
       - unity-webapps*
