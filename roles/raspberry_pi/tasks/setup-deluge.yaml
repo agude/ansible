@@ -5,14 +5,13 @@
 # Via http://dev.deluge-torrent.org/wiki/UserGuide/ThinClient
 - name: Update apt cache and install "deluged" and "deluge-console"
   apt:
-    name: "{{ item }}"
+    name:
+      - deluged
+      - deluge-console
     update_cache: yes
     state: latest
     cache_valid_time: 3600
   become: true
-  with_items:
-    - deluged
-    - deluge-console
 
 - name: Set up the remote deluge user
   copy:

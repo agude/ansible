@@ -15,15 +15,14 @@
 
 - name: Update apt cache and install the "git", "curl", and "vim" packages
   apt:
-    name: "{{ item }}"
+    name:
+      - git
+      - vim-gnome
+      - curl
     update_cache: yes
     state: present
     cache_valid_time: 3600
   become: true
-  with_items:
-    - git
-    - vim-gnome
-    - curl
 
 - name: Ensure github.com is a known host
   lineinfile:

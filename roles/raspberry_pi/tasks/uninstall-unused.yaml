@@ -4,46 +4,44 @@
 
 - name: Remove unused default packages on all Raspberry Pis
   apt:
-    name: "{{ item }}"
+    name: 
+      - atril*
+      - avahi*
+      - brasero*
+      - brltty
+      - cheese*
+      - cups-*
+      - deja-dup*
+      - hexchat*
+      - idle*
+      - libreoffice*
+      - minecraft-pi
+      - pidgin*
+      - plank
+      - pluma*
+      - qjackctl
+      - rhythmbox*
+      - scratch
+      - shotwell*
+      - simple-scan
+      - sonic-pi*
+      - synapse
+      - thunderbird*
+      - transmission*
+      - ubuntu-mate-welcome*
+      - vlc*
+      - youtube-dl*
     state: absent
     purge: yes
     autoremove: yes
   become: yes
-  with_items:
-    - atril*
-    - avahi*
-    - brasero*
-    - brltty
-    - cheese*
-    - cups-*
-    - deja-dup*
-    - hexchat*
-    - idle*
-    - libreoffice*
-    - minecraft-pi
-    - pidgin*
-    - plank
-    - pluma*
-    - qjackctl
-    - rhythmbox*
-    - scratch
-    - shotwell*
-    - simple-scan
-    - sonic-pi*
-    - synapse
-    - thunderbird*
-    - transmission*
-    - ubuntu-mate-welcome*
-    - vlc*
-    - youtube-dl*
 
 - name: Remove unused default packages on Raspberry Pi 3s
   apt:
-    name: "{{ item }}"
+    name:
+      - python-picraft*
     state: absent
     purge: yes
     autoremove: yes
   become: yes
   when: raspberry_pi_version == 3
-  with_items:
-    - python-picraft*

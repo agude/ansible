@@ -6,21 +6,19 @@
 
 - name: Apt install various programs
   apt:
-    name: "{{ item }}"
+    name: "{{ install.common.all }}"
     state: latest
     update_cache: yes
     cache_valid_time: 3600
   become: true
-  with_items: "{{ install.common.all }}"
 
 - name: Apt install 16.04 specific programs
   apt:
-    name: "{{ item }}"
+    name: "{{ install.common.xenial }}"
     state: latest
     update_cache: yes
     cache_valid_time: 3600
   become: true
-  with_items: "{{ install.common.xenial }}"
   when:
     - ansible_distribution == "Ubuntu"
     - ansible_distribution_version == "16.04"
