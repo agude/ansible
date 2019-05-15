@@ -3,3 +3,4 @@
 raspberry_pi_version: 2
 torrent_server: true
 caltrain_module: false
+unifi: false
