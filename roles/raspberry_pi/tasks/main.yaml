@@ -11,5 +11,7 @@
   when: torrent_server == true
 - include: blacklist-wifi.yaml
   when: raspberry_pi_version == 3
+- include: install-github-pages-archiver.yaml
+  when: archiver == true
 - include: install-unifi-controller.yaml
   when: unifi == true
