@@ -1,0 +1,29 @@
+---
+
+# Set up a Ubiquiti Unifi controller
+
+- name: Add Unifi signing key
+  apt_key:
+    url: https://dl.ubnt.com/unifi/unifi-repo.gpg
+    state: present
+  become: true
+
+- name: Add Unifi PPA
+  apt_repository:
+    repo: deb http://www.ui.com/downloads/unifi/debian stable ubiquiti
+    state: present
+    update_cache: true
+  become: true
+
+- name: Installing Unifi controller
+  apt:
+    name: "unifi"
+    state: latest
+  become: true
+
+- name: Disabling non-Unifi MongoDB
+  systemd:
+    name: mongodb
+    enabled: no
+    state: stopped
+  become: true
