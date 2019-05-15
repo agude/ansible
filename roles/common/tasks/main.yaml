@@ -1,8 +1,7 @@
 ---
 
   - include: configure-apt.yaml
-  # For some unknown reason, updating the packages bricks the Raspberry Pis
-  #- include: upgrade-packages.yaml
+  - include: upgrade-packages.yaml
   - include: install.yaml
   - include: install_neovim.yaml
   - include: sshd-harden.yaml
