@@ -6,7 +6,7 @@
   cron:
     name: 'Run the kernel update script'
     job: 'rpi-update | logger -i -t "kernel update"'
-    minute: 0
-    hour: 0
+    minute: '0'
+    hour: '0'
     state: present
   become: yes
