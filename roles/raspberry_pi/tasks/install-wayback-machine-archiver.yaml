@@ -1,0 +1,18 @@
+---
+
+- name: Pip install Wayback Machine Archiver
+  pip:
+    name: git+git://github.com/agude/wayback-machine-archiver.git
+    state: forcereinstall
+    executable: "{{ ansible_env.HOME }}/bin/miniconda/bin/pip"
+
+- name: Adding pages to github archiver
+  cron:
+    name: 'Backup {{ item.site }} on Archive.org'
+    special_time: daily
+    job: "{ {{ ansible_env.HOME }}/bin/miniconda/bin/archiver {{ item.other }} --sitemaps {{ item.sitemap }} --archive-sitemap-also --log INFO 2>&1 && {{ ansible_env.HOME }}/bin/miniconda/bin/t -s '{{ item.site }} backed up!' 2>&1 || {{ ansible_env.HOME }}/bin/miniconda/bin/t -s 'FAILED TO BACKUP: {{ item.site }}' 2>&1 ; } | logger -i -t 'Archiver {{ item.site }}'"
+    state: present
+  with_items:
+    - { sitemap: 'https://alexgude.com/sitemap.xml', other: '', site: 'https://alexgude.com' }
+    - { sitemap: 'http://charles.uno/sitemap.xml', other: '', site: 'http://charles.uno' }
+    - { sitemap: 'https://www.radiokeysmusic.com/sitemap.xml', other: 'https://www.radiokeysmusic.com', site: 'https://www.radiokeysmusic.com' }
