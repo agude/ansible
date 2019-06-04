@@ -2,7 +2,7 @@
 
 - name: Pip install Wayback Machine Archiver
   pip:
-    name: git+git://github.com/agude/wayback-machine-archiver.git
+    name: wayback-machine-archiver
     state: forcereinstall
     executable: "{{ ansible_env.HOME }}/bin/miniconda/bin/pip"
 
