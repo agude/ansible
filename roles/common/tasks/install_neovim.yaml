@@ -5,6 +5,7 @@
     repo: 'ppa:neovim-ppa/stable'
     state: present
   become: yes
+  when: ansible_distribution == 'Ubuntu'
 
 - name: Install Neovim
   apt:
