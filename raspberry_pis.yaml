@@ -2,6 +2,7 @@
   hosts:
     - pion
     - kaon
+    - rho
   roles:
     - common
     - raspberry_pi

@@ -3,11 +3,13 @@ einstein
 dirac
 pion
 kaon
+rho
 
 # Groups
 [rasberry_pis]
 pion
 kaon
+rho
 
 [personal_computers]
 einstein
