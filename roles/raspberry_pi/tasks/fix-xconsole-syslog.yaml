@@ -14,3 +14,4 @@
     - { regexp: '^\tnews[.]err;\\', replace: '#\tnews.err;\\' }
     - { regexp: '^\t[*][.][=]debug[;][*][.][=]info[;]\\', replace: '#\t*.=debug;*.=info;\\' }
     - { regexp: '^\t[*][.][=]notice[;][*][.][=]warn\t[|][/]dev[/]xconsole', replace: '#\t*.=notice;*.=warn   |/dev/xconsole' }
+  when: ansible_distribution == 'Ubuntu'
