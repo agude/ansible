@@ -3,7 +3,7 @@
   - include: configure-apt.yaml
   - include: upgrade-packages.yaml
   - include: install.yaml
-  - include: install_neovim.yaml
+  - include: install-neovim.yaml
   - include: sshd-harden.yaml
   - include: dotfiles.yaml
   - include: modify-sudo.yaml
