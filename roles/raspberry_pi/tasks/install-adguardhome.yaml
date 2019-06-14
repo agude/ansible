@@ -1,0 +1,33 @@
+---
+
+# Install AdGuard Home
+
+- name: Download the AdGuard Home tarball
+  get_url:
+    url: https://static.adguard.com/adguardhome/release/AdGuardHome_linux_arm.tar.gz
+    dest: /tmp/adguard.tar.gz
+    mode: "u+rwx"
+
+- name: Setup AdGuard install location
+  file:
+    path: /opt/adguard/
+    state: directory
+    mode: "u+rwx,go+rx"
+    owner: root
+    group: root
+  become: true
+
+- name: Untar AdGuard to install location
+  unarchive:
+    remote_src: true
+    src: /tmp/adguard.tar.gz
+    dest: /opt/adguard
+    creates: /opt/adguard/AdGuardHome/AdGuardHome
+  become: true
+
+- name: Install AdGuard Home
+  command: ./AdGuardHome -s install
+  args:
+    chdir: /opt/adguard/AdGuardHome
+    creates: /etc/systemd/system/AdGuardHome.service
+  become: true

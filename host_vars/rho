@@ -5,3 +5,4 @@ torrent_server: false
 caltrain_module: false
 archiver: false
 unifi: false
+dns_adblocker: true
