@@ -1,5 +1,6 @@
 ---
 
+  - include: timezone.yaml
   - include: configure-apt.yaml
   - include: upgrade-packages.yaml
   - include: install.yaml
