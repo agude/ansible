@@ -26,10 +26,17 @@
     dest: "{{ ansible_env.HOME }}/.config/deluge/auth"
     mode: "u=rw,go="
 
+- name: Add user to syslog so they can create the logging directory
+  user:
+    name: "{{ user }}"
+    groups: syslog
+    append: true
+  become: true
+
 - name: Set up deluged configuration
   command: 'deluge-console "{{ item }}"'
   with_items:
-    - "config -s allow_remote True"
+    - "config --set allow_remote true"
     - "config allow_remote"
   register: result
 
@@ -50,6 +57,3 @@
     state: started
     enabled: yes
   become: yes
-
-# Might also need to set permission to 777 on /var/log/deluge
-# Need to set config --set allow_remote true
