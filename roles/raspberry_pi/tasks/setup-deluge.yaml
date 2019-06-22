@@ -18,7 +18,7 @@
     path: "{{ ansible_env.HOME }}/.config/deluge"
     state: directory
     mode: "u=rwX,go="
-    recures: true
+    recurse: true
 
 - name: Set up the remote deluge user
   copy:
@@ -50,3 +50,6 @@
     state: started
     enabled: yes
   become: yes
+
+# Might also need to set permission to 777 on /var/log/deluge
+# Need to set config --set allow_remote true
