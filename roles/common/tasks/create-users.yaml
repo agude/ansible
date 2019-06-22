@@ -1,0 +1,28 @@
+---
+
+- include_vars: roles/common/vault/users.yaml
+
+- name: Creating unique group for each user
+  group:
+    name: "{{ item.username }}"
+    state: present
+  become: true
+  with_items: "{{ users }}"
+  loop_control:
+    label: "{{ item.username }}"
+
+- name: Adding users
+  user:
+    name: "{{ item.username }}"
+    password: "{{ item.password | password_hash('sha512') }}"
+    update_password: on_create
+    group: "{{ item.username }}"
+    groups: "{{ item.groups }}"
+    append: true
+    shell: /bin/bash
+    createhome: yes
+    state: present
+  become: true
+  with_items: '{{users}}'
+  loop_control:
+    label: "{{ item.username }}"

@@ -1,5 +1,6 @@
 ---
 
+  - include: create-users.yaml
   - include: timezone.yaml
   - include: configure-apt.yaml
   - include: upgrade-packages.yaml
