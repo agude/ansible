@@ -13,6 +13,13 @@
     cache_valid_time: 3600
   become: true
 
+- name: Make deluge config directory
+  file:
+    path: "{{ ansible_env.HOME }}/.config/deluge"
+    state: directory
+    mode: "u=rwX,go="
+    recures: true
+
 - name: Set up the remote deluge user
   copy:
     src: roles/raspberry_pi/vault/auth
