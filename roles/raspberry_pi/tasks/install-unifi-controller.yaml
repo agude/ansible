@@ -2,28 +2,55 @@
 
 # Set up a Ubiquiti Unifi controller
 
-- name: Add Unifi signing key
+- name: Import MongoDB key
   apt_key:
-    url: https://dl.ubnt.com/unifi/unifi-repo.gpg
-    state: present
+    keyserver: hkp://keyserver.ubuntu.com:80
+    id: 0C49F3730359A14518585931BC711F9BA15703C6
   become: true
 
-- name: Add Unifi PPA
+- name: Add MongoDB repository
   apt_repository:
-    repo: deb http://www.ui.com/downloads/unifi/debian stable ubiquiti
+    filename: '/etc/apt/sources.list.d/mongodb-org-3.4.list'
+    repo: 'deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse'
     state: present
     update_cache: true
   become: true
 
-- name: Installing Unifi controller
+# arm64 is not supported by the PPA
+#- name: Add Unifi signing key
+#  apt_key:
+#    url: https://dl.ubnt.com/unifi/unifi-repo.gpg
+#    state: present
+#  become: true
+#
+#- name: Add Unifi PPA
+#  apt_repository:
+#    filename: '/etc/apt/sources.list.d/unifi.list'
+#    repo: deb http://www.ui.com/downloads/unifi/debian stable ubiquiti
+#    state: present
+#    update_cache: true
+#  become: true
+#- name: Installing Unifi controller
+#  apt:
+#    name: "unifi"
+#    state: latest
+#  become: true
+
+- name: Download and install Unifi controller deb
   apt:
-    name: "unifi"
-    state: latest
+    deb: https://dl.ubnt.com/unifi/5.10.25/unifi_sysvinit_all.deb
   become: true
 
-- name: Disabling non-Unifi MongoDB
-  systemd:
-    name: mongodb
-    enabled: no
-    state: stopped
+# Fails when MongoDB isn't running
+#- name: Disabling non-Unifi MongoDB
+#  systemd:
+#    name: mongodb
+#    enabled: no
+#  become: true
+
+- name: Add user to unifi so they can copy backup files
+  user:
+    name: "{{ ansible_user_id }}"
+    groups: unifi
+    append: true
   become: true
