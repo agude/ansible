@@ -1,0 +1,6 @@
+---
+
+- name: Set the hostname to the one in the inventory
+  hostname:
+    name: "{{ inventory_hostname }}"
+  become: true
