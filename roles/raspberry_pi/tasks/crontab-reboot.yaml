@@ -12,7 +12,7 @@
 - name: Add crontab entry to reboot the machine between 0100 and 0200 every night if needed
   cron:
     name: 'Reboot between 0100 and 0200 every night, if `/var/run/reboot-required` exists'
-    job: 'if [ -f /var/run/reboot-required ]; then /sbin/reboot; else echo "No reboot needed"; fi'
+    job: 'if [ -f /var/run/reboot-required ]; then /sbin/reboot; else echo "No reboot needed"; fi | logger -i -t "cron reboot"'
     minute: "{{ 59 | random(seed=inventory_hostname) }}"
     hour: '1'
     state: present

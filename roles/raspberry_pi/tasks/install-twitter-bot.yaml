@@ -28,6 +28,14 @@
     special_time: reboot
     state: present
 
+- name: Add crontab entry to add Twitter heartbeat
+  cron:
+    name: 'Tweet daily heartbeat'
+    job: '{{ ansible_env.HOME }}/bin/miniconda/bin/t -s "I am still alive!" | logger -i -t "twitter heartbeat'
+    special_time: daily
+    state: present
+  become: yes
+
 - name: Adding caltrain twitter module to crontab
   cron:
     name: 'Check Caltrain Status for {{ item.period }} commute'
