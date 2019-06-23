@@ -28,7 +28,7 @@
 
 - name: Add user to syslog so they can create the logging directory
   user:
-    name: "{{ user }}"
+    name: "{{ lookup('env','USER') }}"
     groups: syslog
     append: true
   become: true

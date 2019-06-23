@@ -50,7 +50,7 @@
 
 - name: Add user to unifi so they can copy backup files
   user:
-    name: "{{ ansible_user_id }}"
+    name: "{{ lookup('env','USER') }}"
     groups: unifi
     append: true
   become: true
