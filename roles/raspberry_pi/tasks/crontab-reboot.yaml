@@ -1,11 +1,18 @@
 ---
 
 # Set up a cron job to reboot the pi
+- name: Install reboot-notifier
+  apt:
+    name: reboot-notifier
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
 
-- name: Add crontab entry to reboot the machine between 0100 and 0200 every night
+- name: Add crontab entry to reboot the machine between 0100 and 0200 every night if needed
   cron:
-    name: 'Reboot between 0100 and 0200 every night, otherwise the Pi locks up after a few days'
-    job: '/sbin/reboot | logger -i -t "nightly reboot"'
+    name: 'Reboot between 0100 and 0200 every night, if `/var/run/reboot-required` exists'
+    job: 'if [ -f /var/run/reboot-required ]; then /sbin/reboot; else echo "No reboot needed"; fi'
     minute: "{{ 59 | random(seed=inventory_hostname) }}"
     hour: '1'
     state: present
