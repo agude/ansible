@@ -1,0 +1,8 @@
+---
+
+- name: Adding authorized SSH keys
+  authorized_key:
+    user: agude
+    state: present
+    exclusive: true
+    key: "{{ authorized_keys }}"

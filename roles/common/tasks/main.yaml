@@ -2,6 +2,8 @@
 
 - include: create-users.yaml
 
+- include: add-ssh-keys.yaml
+
 - include: hostname.yaml
 
 - include: timezone.yaml

@@ -1,3 +1,5 @@
 ---
 
 fix_lightdm_monitors: true
+authorized_keys: |
+  ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJSqPNAhjJL4T73SVXdIJ00u8r83OoEhIMJ2kwFG6lif agude@dirac_to_einstein
