@@ -35,13 +35,3 @@
     purge: yes
     autoremove: yes
   become: yes
-
-- name: Remove unused default packages on Raspberry Pi 3s
-  apt:
-    name:
-      - python-picraft*
-    state: absent
-    purge: yes
-    autoremove: yes
-  become: yes
-  when: raspberry_pi_version == 3
