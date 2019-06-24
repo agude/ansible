@@ -1,11 +1,18 @@
 ---
 
-  - include: create-users.yaml
-  - include: uninstall.yaml
-  - include: install-anaconda.yaml
-  - include: install.yaml
-  - include: google-chrome.yaml
-  - include: change-usb-mount.yaml
-  - include: razer-deathadder-sensitivity.yaml
-  - include: fix-lightdm-monitors.yaml
-    when: fix_lightdm_monitors == true
+- include: create-users.yaml
+
+- include: uninstall.yaml
+
+- include: install-anaconda.yaml
+
+- include: install.yaml
+
+- include: google-chrome.yaml
+
+- include: change-usb-mount.yaml
+
+- include: razer-deathadder-sensitivity.yaml
+
+- include: fix-lightdm-monitors.yaml
+  when: fix_lightdm_monitors == true

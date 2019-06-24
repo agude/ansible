@@ -1,19 +1,30 @@
 ---
 
 - include: setup-ntp.yaml
+
 - include: fix-xconsole-syslog.yaml
   when: ansible_distribution == 'Ubuntu'
+
 - include: crontab-reboot.yaml
+
 - include: uninstall-unused.yaml
+
 - include: install-miniconda.yaml
+  when: ansible_architecture != 'aarch64'
+
 - include: install-twitter-bot.yaml
+
 - include: install-adguardhome.yaml
   when: dns_adblocker == true
+
 - include: setup-deluge.yaml
   when: torrent_server == true
+
 - include: blacklist-wifi.yaml
   when: raspberry_pi_version == 3
+
 - include: install-wayback-machine-archiver.yaml
   when: archiver == true
+
 - include: install-unifi-controller.yaml
   when: unifi == true
