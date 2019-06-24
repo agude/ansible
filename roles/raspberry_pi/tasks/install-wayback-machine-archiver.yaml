@@ -4,7 +4,6 @@
   pip:
     name: wayback-machine-archiver
     state: forcereinstall
-    executable: "{{ ansible_env.HOME }}/bin/miniconda/bin/pip"
 
 - name: Adding pages to github archiver
   cron:

@@ -9,9 +9,6 @@
 
 - include: uninstall-unused.yaml
 
-- include: install-miniconda.yaml
-  when: ansible_architecture != 'aarch64'
-
 - include: install-twitter-bot.yaml
 
 - include: install-adguardhome.yaml
