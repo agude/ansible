@@ -16,13 +16,12 @@
     update_cache: true
   become: true
 
-# arm64 is not supported by the PPA
-#- name: Add Unifi signing key
-#  apt_key:
-#    url: https://dl.ubnt.com/unifi/unifi-repo.gpg
-#    state: present
-#  become: true
-#
+- name: Add Unifi signing key
+  apt_key:
+    url: https://dl.ubnt.com/unifi/unifi-repo.gpg
+    state: present
+  become: true
+
 #- name: Add Unifi PPA
 #  apt_repository:
 #    filename: '/etc/apt/sources.list.d/unifi.list'
@@ -30,16 +29,20 @@
 #    state: present
 #    update_cache: true
 #  become: true
+#  when: ansible_architecture != 'aarch64'
+#
 #- name: Installing Unifi controller
 #  apt:
 #    name: "unifi"
 #    state: latest
 #  become: true
+#  when: ansible_architecture != 'aarch64'
 
-- name: Download and install Unifi controller deb
+- name: Installing Unifi controller
   apt:
     deb: https://dl.ubnt.com/unifi/5.10.25/unifi_sysvinit_all.deb
   become: true
+  when: ansible_architecture == 'aarch64'
 
 # Fails when MongoDB isn't running
 #- name: Disabling non-Unifi MongoDB
@@ -54,3 +57,5 @@
     groups: unifi
     append: true
   become: true
+
+# Might need to dpkg the package, then apt-get -f install
