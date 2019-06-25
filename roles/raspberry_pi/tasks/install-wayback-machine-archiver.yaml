@@ -5,13 +5,38 @@
     name: wayback-machine-archiver
     state: forcereinstall
 
+- name: Set fact with twitter script and Caltrain script locations
+  set_fact:
+    twitter_bot_script_location: "{{ ansible_env.HOME }}/.local/bin/t"
+    wayback_machine_script_location: "{{ ansible_env.HOME }}/.local/bin/archiver"
+
+- name: Check that the Twitter Bot script exists
+  stat:
+    path: "{{ twitter_bot_script_location }}"
+  register: stat_result
+
+- name: Fail if Twitter Bot location is invalid
+  fail:
+    msg: "Failed to location Twitter Bot at: {{ twitter_bot_script_location }}"
+  when: stat_result.stat.exists == false
+
+- name: Check that the Archiver script exists
+  stat:
+    path: "{{ wayback_machine_script_location }}"
+  register: stat_result
+
+- name: Fail if Archiver location is invalid
+  fail:
+    msg: "Failed to location Twitter Bot at: {{ wayback_machine_script_location }}"
+  when: stat_result.stat.exists == false
+
 - name: Adding pages to github archiver
   cron:
     name: 'Backup {{ item.site }} on Archive.org'
     special_time: daily
-    job: "{ {{ ansible_env.HOME }}/bin/miniconda/bin/archiver {{ item.other }} --sitemaps {{ item.sitemap }} --archive-sitemap-also --log INFO 2>&1 && {{ ansible_env.HOME }}/bin/miniconda/bin/t -s '{{ item.site }} backed up!' 2>&1 || {{ ansible_env.HOME }}/bin/miniconda/bin/t -s 'FAILED TO BACKUP: {{ item.site }}' 2>&1 ; } | logger -i -t 'Archiver {{ item.site }}'"
+    job: "{ {{ wayback_machine_script_location }} {{ item.other }} --sitemaps {{ item.sitemap }} --archive-sitemap-also --log INFO 2>&1 && {{ twitter_bot_script_location }} -s '{{ item.site }} backed up!' 2>&1 || {{ twitter_bot_script_location }} -s 'FAILED TO BACKUP: {{ item.site }}' 2>&1 ; } | logger -i -t 'Archiver {{ item.site }}'"
     state: present
   with_items:
     - { sitemap: 'https://alexgude.com/sitemap.xml', other: '', site: 'https://alexgude.com' }
     - { sitemap: 'http://charles.uno/sitemap.xml', other: '', site: 'http://charles.uno' }
-    - { sitemap: 'https://www.radiokeysmusic.com/sitemap.xml', other: 'https://www.radiokeysmusic.com', site: 'https://www.radiokeysmusic.com' }
+    - { sitemap: 'httws://www.radiokeysmusic.com/sitemap.xml', other: 'https://www.radiokeysmusic.com', site: 'https://www.radiokeysmusic.com' }

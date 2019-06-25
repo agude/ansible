@@ -14,6 +14,21 @@
     state: forcereinstall
     editable: false
 
+- name: Set fact with twitter script and Caltrain script locations
+  set_fact:
+    twitter_bot_script_location: "{{ ansible_env.HOME }}/.local/bin/t"
+    caltain_bot_script_location: "{{ ansible_env.HOME }}/.local/bin/caltrain-checker"
+
+- name: Check that the Twitter Bot script exists
+  stat:
+    path: "{{ twitter_bot_script_location }}"
+  register: stat_result
+
+- name: Fail if Twitter Bot location is invalid
+  fail: 
+    msg: "Failed to location Twitter Bot at: {{ twitter_bot_script_location }}"
+  when: stat_result.stat.exists == false
+
 - name: Creating configuration directory
   file:
     path: "{{ ansible_env.HOME }}/.config/rpi-twitter"
@@ -29,27 +44,14 @@
 - name: Add crontab entry to tweet when the machine powers on
   cron:
     name: 'Tweet after rebooting'
-    job: "sleep 10 && {{ ansible_env.HOME }}/bin/miniconda/bin/t -s 'Good morning! I just came back up from reboot!' 2>&1 | logger -i -t 'Twitter Bot: Reboot'"
+    job: "sleep 10 && {{ twitter_bot_script_location }} -s 'Good morning! I just came back up from reboot!' 2>&1 | logger -i -t 'Twitter Bot: Reboot'"
     special_time: reboot
     state: present
 
 - name: Add crontab entry to add Twitter heartbeat
   cron:
     name: 'Tweet daily heartbeat'
-    job: '{{ ansible_env.HOME }}/bin/miniconda/bin/t -s "I am still alive!" | logger -i -t "twitter heartbeat'
+    job: '{{ twitter_bot_script_location }} -s "I am still alive!" | logger -i -t "twitter heartbeat'
     special_time: daily
     state: present
   become: yes
-
-- name: Adding caltrain twitter module to crontab
-  cron:
-    name: 'Check Caltrain Status for {{ item.period }} commute'
-    hour: '{{ item.hour }}'
-    minute: '{{ item.minute }}'
-    weekday: 1-5
-    job: "{{ ansible_env.HOME }}/bin/miniconda/bin/caltrain-checker -t {{ item.trains }} nb -m caltrain -b {{ item.start }} -e {{ item.end }} -s -r alex_gude | logger -i -t 'Twitter Bot: Caltrain'"
-    state: present
-  with_items:
-    - { period: 'morning', trains: '227 nb', start: '6', end: '9', hour: '8', minute: '0,15,30' }
-    - { period: 'evening', trains: '264 268 sb', start: '15', end: '18', hour: '16,17', minute: '0,15,30,45' }
-  when: caltrain_module == true

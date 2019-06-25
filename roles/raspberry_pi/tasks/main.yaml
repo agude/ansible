@@ -11,6 +11,9 @@
 
 - include: install-twitter-bot.yaml
 
+- include: install-caltrain-bot.yaml
+  when: caltrain_module == true
+
 - include: install-adguardhome.yaml
   when: dns_adblocker == true
 
