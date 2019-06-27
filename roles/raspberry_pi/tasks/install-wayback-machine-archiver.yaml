@@ -39,4 +39,4 @@
   with_items:
     - { sitemap: 'https://alexgude.com/sitemap.xml', other: '', site: 'https://alexgude.com' }
     - { sitemap: 'http://charles.uno/sitemap.xml', other: '', site: 'http://charles.uno' }
-    - { sitemap: 'httws://www.radiokeysmusic.com/sitemap.xml', other: 'https://www.radiokeysmusic.com', site: 'https://www.radiokeysmusic.com' }
+    - { sitemap: 'https://www.radiokeysmusic.com/sitemap.xml', other: 'https://www.radiokeysmusic.com', site: 'https://www.radiokeysmusic.com' }
