@@ -45,7 +45,6 @@
 - name: Add crontab entry to add Twitter heartbeat
   cron:
     name: 'Tweet daily heartbeat'
-    job: '{{ twitter_bot_script_location }} -s "I am still alive!" | logger -i -t "twitter heartbeat'
+    job: '{{ twitter_bot_script_location }} -s "I have been $(uptime -p)!" | logger -i -t "twitter heartbeat"'
     special_time: daily
     state: present
-  become: yes
