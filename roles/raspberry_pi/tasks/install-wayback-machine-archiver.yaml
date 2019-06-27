@@ -5,30 +5,16 @@
     name: wayback-machine-archiver
     state: forcereinstall
 
-- name: Set fact with twitter script and Caltrain script locations
+- name: Set fact with twitter script and Wayback Machine Archiver script locations
   set_fact:
     twitter_bot_script_location: "{{ ansible_env.HOME }}/.local/bin/t"
     wayback_machine_script_location: "{{ ansible_env.HOME }}/.local/bin/archiver"
 
-- name: Check that the Twitter Bot script exists
-  stat:
-    path: "{{ twitter_bot_script_location }}"
-  register: stat_result
-
-- name: Fail if Twitter Bot location is invalid
-  fail:
-    msg: "Failed to location Twitter Bot at: {{ twitter_bot_script_location }}"
-  when: stat_result.stat.exists == false
-
-- name: Check that the Archiver script exists
-  stat:
-    path: "{{ wayback_machine_script_location }}"
-  register: stat_result
-
-- name: Fail if Archiver location is invalid
-  fail:
-    msg: "Failed to location Twitter Bot at: {{ wayback_machine_script_location }}"
-  when: stat_result.stat.exists == false
+- name: Check that the Twitter Bot and Wayback Machine Archiver exist
+  include: check-executable-location.yaml
+  with_items:
+    - "{{ twitter_bot_script_location }}"
+    - "{{ wayback_machine_script_location }}"
 
 - name: Adding pages to github archiver
   cron:

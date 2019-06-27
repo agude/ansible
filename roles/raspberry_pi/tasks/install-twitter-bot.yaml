@@ -17,17 +17,11 @@
 - name: Set fact with twitter script and Caltrain script locations
   set_fact:
     twitter_bot_script_location: "{{ ansible_env.HOME }}/.local/bin/t"
-    caltain_bot_script_location: "{{ ansible_env.HOME }}/.local/bin/caltrain-checker"
 
-- name: Check that the Twitter Bot script exists
-  stat:
-    path: "{{ twitter_bot_script_location }}"
-  register: stat_result
-
-- name: Fail if Twitter Bot location is invalid
-  fail: 
-    msg: "Failed to location Twitter Bot at: {{ twitter_bot_script_location }}"
-  when: stat_result.stat.exists == false
+- name: Check that the Twitter Bot exists
+  include: check-executable-location.yaml
+  with_items:
+    - "{{ twitter_bot_script_location }}"
 
 - name: Creating configuration directory
   file:

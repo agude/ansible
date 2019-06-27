@@ -4,16 +4,10 @@
   set_fact:
     caltain_bot_script_location: "{{ ansible_env.HOME }}/.local/bin/caltrain-checker"
 
-- name: Check that the Caltrain Bot script exists
-  stat:
-    path: "{{ caltain_bot_script_location }}"
-  register: stat_result
-
-- name: Fail if Caltrain Bot location is invalid
-  fail: 
-    msg: "Failed to location Caltrain Bot at: {{ caltain_bot_script_location }}"
-  when: stat_result.stat.exists == false
-
+- name: Check that the Caltrain Bot exists
+  include: check-executable-location.yaml
+  with_items:
+    - "{{ caltain_bot_script_location }}"
 
 - name: Adding caltrain twitter module to crontab
   cron:

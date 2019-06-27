@@ -1,0 +1,9 @@
+- name: Check that the "{{ item }}" exists
+  stat:
+    path: "{{ item }}"
+  register: stat_result
+
+- name: Fail if "{{ item }}" does not exist
+  fail: 
+    msg: "Failed to locate: {{ item }}"
+  when: stat_result.stat.exists == false
