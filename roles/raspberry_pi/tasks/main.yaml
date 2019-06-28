@@ -9,6 +9,8 @@
 
 - include: uninstall-unused.yaml
 
+- include: setup-monitoring.yaml
+
 - include: install-twitter-bot.yaml
 
 - include: install-caltrain-bot.yaml

@@ -1,0 +1,32 @@
+---
+
+# Set up a Twitter API wrapper and various calls to it
+
+- name: Install SQLite3
+  apt:
+    name: sqlite3
+    state: latest
+  become: true
+
+- name: Make SQLite data directory
+  file:
+    path: "{{ ansible_env.HOME }}/data/"
+    state: directory
+    mode: "u=rwX,go="
+
+- name: Create temperature database
+  shell: |
+    sqlite3 "data.sqlite3" << EOF
+    CREATE TABLE IF NOT EXISTS temperature (
+      datetime_id INTEGER PRIMARY KEY,
+      temperate INTEGER NOT NULL
+    );
+    EOF
+  args:
+    chdir: "{{ ansible_env.HOME }}/data/"
+
+- name: Add crontab entry to log the temperature
+  cron:
+    name: 'Temperature logger'
+    job: 'sqlite3 {{ ansible_env.HOME }}/data/data.sqlite3 "INSERT INTO temperature (datetime_id, temperate) VALUES ($(date +\%s), $(</sys/class/thermal/thermal_zone0/temp));" | logger -i -t "Temperature logging"'
+    state: present
