@@ -25,8 +25,14 @@
   args:
     chdir: "{{ ansible_env.HOME }}/data/"
 
+- name: Copy temperature logging script
+  copy:
+    src: "roles/raspberry_pi/files/write_temperature_to_sqlite.sh"
+    dest: "{{ ansible_env.HOME }}/data/"
+    mode: "u=rx,go="
+
 - name: Add crontab entry to log the temperature
   cron:
     name: 'Temperature logger'
-    job: 'sqlite3 {{ ansible_env.HOME }}/data/data.sqlite3 "INSERT INTO temperature (datetime_id, temperate) VALUES ($(date +\%s), $(</sys/class/thermal/thermal_zone0/temp));" | logger -i -t "Temperature logging"'
+    job: '{{ ansible_env.HOME }}/data/write_temperature_to_sqlite.sh'
     state: present
