@@ -19,7 +19,7 @@
     sqlite3 "data.sqlite3" << EOF
     CREATE TABLE IF NOT EXISTS temperature (
       datetime_id INTEGER PRIMARY KEY,
-      temperate INTEGER NOT NULL
+      temperature INTEGER NOT NULL
     );
     EOF
   args:

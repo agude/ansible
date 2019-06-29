@@ -10,4 +10,4 @@ temp=$(</sys/class/thermal/thermal_zone0/temp)
 
 # Write to db
 echo "Writing time: $time, temp: $temp"
-sqlite3 /home/agude/data/data.sqlite3 "INSERT INTO temperature (datetime_id, temperate) VALUES ($time, $temp);"
+sqlite3 /home/agude/data/data.sqlite3 "INSERT INTO temperature (datetime_id, temperature) VALUES ($time, $temp);"
