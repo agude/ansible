@@ -16,3 +16,6 @@
 
 - include: fix-lightdm-monitors.yaml
   when: fix_lightdm_monitors == true
+
+- include: setup-rpi-backup.yaml
+  when: ansible_hostname == "einstein"

@@ -1,0 +1,37 @@
+---
+
+- name: Install rsync
+  apt:
+    name: rsync
+    state: latest
+  become: true
+
+- name: Make Unifi backup location
+  file:
+    path: "{{ ansible_env.HOME }}/.unifi_backups"
+    state: directory
+    mode: "u=rwX,go="
+
+- name: Add crontab entry to backup Unifi
+  cron:
+    name: 'Backup Unifi'
+    job: 'nice -n19 ionice -c2 -n7 rsync -vazzh --itemize-changes kaon:/usr/lib/unifi/data/backup {{ ansible_env.HOME }}/.unifi_backups/ | logger -i -t "unifi backup"'
+    special_time: hourly
+    state: present
+
+- name: Make data.sqlite3 backup location
+  file:
+    path: "{{ ansible_env.HOME }}/.rpi_data_backups"
+    state: directory
+    mode: "u=rwX,go="
+
+- name: Add crontab entry to backup data.sqlite3
+  cron:
+    name: 'Backup {{ item }} data'
+    job: 'nice -n19 ionice -c2 -n7 rsync -vazzh --itemize-changes {{ item }}:/home/agude/data/data.sqlite3 {{ ansible_env.HOME }}/.rpi_data_backups/{{ item }}_data.sqlite3 | logger -i -t "{{ item }} data backup"'
+    special_time: hourly
+    state: present
+  with_items:
+    - pion
+    - kaon
+    - rho
