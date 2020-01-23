@@ -32,6 +32,7 @@ install:
       - homebank
       - inkscape
       - latexmk
+      - libffi-dev
       - libgcrypt20-dev
       - libmxml-dev
       - libpurple-dev
@@ -43,6 +44,7 @@ install:
       - pidgin
       - pidgin-otr
       - ruby-bundler
+      - ruby2.3-dev
       - ubuntu-restricted-*
       - viking
       - vim-gnome
