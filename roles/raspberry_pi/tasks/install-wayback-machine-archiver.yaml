@@ -20,9 +20,9 @@
   cron:
     name: 'Backup {{ item.site }} on Archive.org'
     special_time: daily
-    job: "{ {{ wayback_machine_script_location }} {{ item.other }} --sitemaps {{ item.sitemap }} --archive-sitemap-also --log INFO 2>&1 && {{ twitter_bot_script_location }} -s '{{ item.site }} backed up!' 2>&1 || {{ twitter_bot_script_location }} -s 'FAILED TO BACKUP: {{ item.site }}' 2>&1 ; } | logger -i -t 'Archiver {{ item.site }}'"
+    job: "sleep {{ item.sleep }} && { {{ wayback_machine_script_location }} {{ item.other }} --sitemaps {{ item.sitemap }} --archive-sitemap-also --log INFO --rate-limit-wait 60 2>&1 && {{ twitter_bot_script_location }} -s '{{ item.site }} backed up!' 2>&1 || {{ twitter_bot_script_location }} -s 'FAILED TO BACKUP: {{ item.site }}' 2>&1 ; } | logger -i -t 'Archiver {{ item.site }}'"
     state: present
   with_items:
-    - { sitemap: 'https://alexgude.com/sitemap.xml', other: '', site: 'https://alexgude.com' }
-    - { sitemap: 'http://charles.uno/sitemap.xml', other: '', site: 'http://charles.uno' }
-    - { sitemap: 'https://www.radiokeysmusic.com/sitemap.xml', other: 'https://www.radiokeysmusic.com', site: 'https://www.radiokeysmusic.com' }
+    - { sitemap: 'https://alexgude.com/sitemap.xml', other: '', site: 'https://alexgude.com', sleep: '0s' }
+    - { sitemap: 'http://charles.uno/sitemap.xml', other: '', site: 'http://charles.uno', sleep: '20s' }
+    - { sitemap: 'https://www.radiokeysmusic.com/sitemap.xml', other: 'https://www.radiokeysmusic.com', site: 'https://www.radiokeysmusic.com',  sleep: '40s' }
