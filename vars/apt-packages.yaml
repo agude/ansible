@@ -42,6 +42,7 @@ install:
       - libxml2-utils
       - lyx
       - meld
+      - picard
       - pidgin
       - pidgin-otr
       - ruby-bundler
