@@ -25,6 +25,7 @@ install:
       - dconf-tools
       - deluge
       - exuberant-ctags
+      - flac
       - getmail4
       - gimp
       - gparted
