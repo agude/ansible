@@ -20,3 +20,25 @@
   when:
     - ansible_distribution == "Ubuntu"
     - ansible_distribution_version == "16.04"
+
+- name: Remove 18.04 specific programs
+  apt:
+    name: "{{ remove.pc.bionic }}"
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  when:
+    - ansible_distribution == "Ubuntu"
+    - ansible_distribution_version == "18.04"
+      
+- name: Remove 20.04 specific programs
+  apt:
+    name: "{{ remove.pc.focal }}"
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+  when:
+    - ansible_distribution == "Ubuntu"
+    - ansible_distribution_version == "20.04"
