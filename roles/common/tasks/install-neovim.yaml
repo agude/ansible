@@ -9,6 +9,8 @@
     - ansible_distribution == 'Ubuntu'
     # Arm64 not yet in the PPA
     - ansible_architecture != 'aarch64'
+    # The repo does not support 20.04, but it has nvim in the default repo
+    - ansible_distribution_version != "20.04"
 
 - name: Install Neovim
   apt:
