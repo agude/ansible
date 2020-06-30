@@ -13,18 +13,15 @@ install:
       - openssh-blacklist
       - openssh-blacklist-extra
       - pdftk
-    bionic:
-    focal:
+    bionic: []
+    focal: []
   rpi:
   pc:
     all:
       - audacity
-      - backintime-gnome
-      - banshee
       - build-essential
       - cmake
       - conky
-      - dconf-tools
       - deluge
       - exuberant-ctags
       - flac
@@ -48,7 +45,6 @@ install:
       - pidgin
       - pidgin-otr
       - ruby-bundler
-      - ruby2.3-dev
       - texlive-fonts-recommended
       - texlive-latex-base
       - texlive-latex-extra
@@ -59,12 +55,20 @@ install:
       - xclip
       - zlib1g-dev
     xenial:
+      - backintime-gnome
+      - banshee
+      - dconf-tools
       - compizconfig-settings-manager
       - gnome-do
+      - ruby2.3-dev
       - vim-gnome
     bionic:
+      - backintime-gnome
+      - banshee
+      - dconf-tools
+      - ruby2.3-dev
       - vim-gnome
-    focal:
+    focal: []
 
 remove:
   common:
@@ -87,7 +91,6 @@ remove:
       - rhythmbox*
       - thunderbird
       - transmission*
-      - ubuntuone*
     xenial:
       - appmenu-qt*
       - unity-webapps*
@@ -110,5 +113,7 @@ remove:
       - unity-scope-virtualbox
       - unity-scope-yelp
       - unity-scope-zotero
+      - ubuntuone*
     bionic:
-    focal:
+      - ubuntuone*
+    focal: []
