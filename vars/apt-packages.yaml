@@ -13,6 +13,8 @@ install:
       - openssh-blacklist
       - openssh-blacklist-extra
       - pdftk
+    bionic:
+    focal:
   rpi:
   pc:
     all:
@@ -54,12 +56,15 @@ install:
       - texlive-science
       - ubuntu-restricted-*
       - viking
-      - vim-gnome
       - xclip
       - zlib1g-dev
     xenial:
       - compizconfig-settings-manager
       - gnome-do
+      - vim-gnome
+    bionic:
+      - vim-gnome
+    focal:
 
 remove:
   common:
@@ -105,3 +110,5 @@ remove:
       - unity-scope-virtualbox
       - unity-scope-yelp
       - unity-scope-zotero
+    bionic:
+    focal:
