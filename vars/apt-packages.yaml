@@ -47,6 +47,11 @@ install:
       - pidgin-otr
       - ruby-bundler
       - ruby2.3-dev
+      - texlive-fonts-recommended
+      - texlive-latex-base
+      - texlive-latex-extra
+      - texlive-pictures
+      - texlive-science
       - ubuntu-restricted-*
       - viking
       - vim-gnome
