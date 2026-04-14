@@ -1,0 +1,7 @@
+---
+user: agude
+dotfiles_repo: git@github.com:agude/dotfiles.git
+dotfiles_profile: default
+
+knowledge_repo: git@github.com:agude/knowledge-base-core.git
+wiki_repo: git@github.com:agude/wiki-core.git

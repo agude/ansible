@@ -1,0 +1,17 @@
+all:
+  children:
+    desktops:
+      hosts:
+        desktop:
+          ansible_host: desktop.local
+        laptop:
+          ansible_host: laptop.local
+    pis:
+      hosts:
+        pi:
+          ansible_host: pi.local
+    nas:
+      hosts:
+        synology:
+          ansible_host: synology.local
+          dotfiles_profile: synology

@@ -1,0 +1,15 @@
+---
+- name: All Linux machines
+  hosts: all
+  roles:
+    - common
+
+- name: Desktop machines
+  hosts: desktops
+  roles:
+    - desktop
+
+- name: Raspberry Pi base setup
+  hosts: pis
+  roles:
+    - pi
