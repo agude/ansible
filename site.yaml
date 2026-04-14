@@ -11,6 +11,7 @@
   hosts: desktops
   roles:
     - desktop
+    - cleanup
 
 - name: Raspberry Pi base setup
   hosts: pis
