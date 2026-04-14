@@ -2,21 +2,14 @@
 dotfiles_profile: default
 
 desktop_packages:
-  - audacity
   - bats
   - build-essential
   - cmake
   - gimp
   - gparted
-  - homebank
   - inkscape
   - latexmk
-  - meld
   - pandoc
-  - picard
-  - python3
-  - python3-pip
-  - python3-venv
   - tesseract-ocr
   - texlive-fonts-recommended
   - texlive-latex-base
