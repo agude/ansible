@@ -1,0 +1,41 @@
+---
+# Install uv from GitHub releases (no curl-pipe-sh).
+# Pin version in group_vars to control updates.
+
+- name: Set uv architecture
+  ansible.builtin.set_fact:
+    uv_arch: "{{ 'x86_64' if ansible_architecture == 'x86_64' else 'aarch64' }}"
+
+- name: Download uv tarball
+  ansible.builtin.get_url:
+    url: "https://github.com/astral-sh/uv/releases/download/{{ uv_version }}/uv-{{ uv_arch }}-unknown-linux-gnu.tar.gz"
+    dest: "/tmp/uv-{{ uv_version }}.tar.gz"
+    mode: "0644"
+  changed_when: false
+
+- name: Extract uv
+  ansible.builtin.unarchive:
+    src: "/tmp/uv-{{ uv_version }}.tar.gz"
+    dest: /tmp
+    remote_src: true
+  changed_when: false
+
+- name: Install uv and uvx to /usr/local/bin
+  ansible.builtin.copy:
+    src: "/tmp/uv-{{ uv_arch }}-unknown-linux-gnu/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    mode: "0755"
+    remote_src: true
+  become: true
+  loop:
+    - uv
+    - uvx
+
+- name: Clean up tarball
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/tmp/uv-{{ uv_version }}.tar.gz"
+    - "/tmp/uv-{{ uv_arch }}-unknown-linux-gnu"
+  changed_when: false

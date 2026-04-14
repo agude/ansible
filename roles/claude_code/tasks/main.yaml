@@ -1,0 +1,12 @@
+---
+# Install Claude Code via the native installer (no Node.js needed).
+# Uses shell with the official installer script — no direct binary
+# download available from a stable URL.
+
+- name: Install Claude Code  # noqa: command-instead-of-module risky-shell-pipe
+  ansible.builtin.shell:
+    cmd: set -o pipefail && curl -fsSL https://claude.ai/install.sh | bash -s stable
+    creates: "/home/{{ user }}/.local/bin/claude"
+    executable: /bin/bash
+  become: true
+  become_user: "{{ user }}"

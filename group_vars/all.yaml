@@ -6,6 +6,8 @@ dotfiles_profile: default
 knowledge_repo: git@github.com:agude/knowledge-base-core.git
 wiki_repo: git@github.com:agude/wiki-core.git
 
+uv_version: "0.7.12"
+
 # Store in Ansible Vault:
 #   ansible-vault encrypt_string '<token>' --name 'ubuntu_pro_token'
 ubuntu_pro_token: "REPLACE_WITH_VAULT_ENCRYPTED_VALUE"

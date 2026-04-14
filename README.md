@@ -44,5 +44,7 @@ Wiki           self-registers hooks + skills via scripts/install
 |---|---|---|
 | common | all | SSH, packages, apt config, dotfiles + Knowledge + Wiki |
 | livepatch | all | Ubuntu Pro + kernel live patching |
+| uv | all | Python package manager (pinned version from GitHub releases) |
+| claude-code | all | Claude Code CLI (native installer, no Node.js) |
 | desktop | desktops | Desktop-specific packages |
 | pi | pis | Docker for GitOps container management |

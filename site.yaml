@@ -4,6 +4,8 @@
   roles:
     - common
     - livepatch
+    - uv
+    - claude_code
 
 - name: Desktop machines
   hosts: desktops
