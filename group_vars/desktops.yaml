@@ -1,2 +1,22 @@
 ---
 dotfiles_profile: default
+
+desktop_packages:
+  - audacity
+  - bats
+  - build-essential
+  - cmake
+  - gimp
+  - gparted
+  - homebank
+  - inkscape
+  - latexmk
+  - meld
+  - pandoc
+  - picard
+  - texlive-fonts-recommended
+  - texlive-latex-base
+  - texlive-latex-extra
+  - texlive-pictures
+  - texlive-science
+  - xclip
