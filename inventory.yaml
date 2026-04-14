@@ -1,0 +1,18 @@
+---
+all:
+  children:
+    desktops:
+      hosts:
+        einstein:
+          ansible_host: einstein.local
+        dirac:
+          ansible_host: dirac.local
+    pis:
+      hosts:
+        kaon:
+          ansible_host: kaon.local
+    nas:
+      hosts:
+        synology:
+          ansible_host: synology.local
+          dotfiles_profile: synology

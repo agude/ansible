@@ -1,23 +1,21 @@
 ---
+- name: Set hostname
+  ansible.builtin.import_tasks: hostname.yaml
 
-- include: create-users.yaml
+- name: Set timezone
+  ansible.builtin.import_tasks: timezone.yaml
 
-- include: add-ssh-keys.yaml
+- name: Configure apt
+  ansible.builtin.import_tasks: configure-apt.yaml
 
-- include: hostname.yaml
+- name: Install packages
+  ansible.builtin.import_tasks: packages.yaml
 
-- include: timezone.yaml
+- name: Harden SSH
+  ansible.builtin.import_tasks: sshd-harden.yaml
 
-- include: configure-apt.yaml
+- name: Deploy dotfiles and repos
+  ansible.builtin.import_tasks: dotfiles.yaml
 
-- include: upgrade-packages.yaml
-
-- include: install.yaml
-
-- include: install-neovim.yaml
-
-- include: sshd-harden.yaml
-
-- include: dotfiles.yaml
-
-- include: modify-sudo.yaml
+- name: Configure sudo
+  ansible.builtin.import_tasks: modify-sudo.yaml

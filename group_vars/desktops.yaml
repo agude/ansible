@@ -1,0 +1,19 @@
+---
+dotfiles_profile: default
+
+desktop_packages:
+  - bats
+  - build-essential
+  - cmake
+  - gimp
+  - gparted
+  - inkscape
+  - latexmk
+  - pandoc
+  - tesseract-ocr
+  - texlive-fonts-recommended
+  - texlive-latex-base
+  - texlive-latex-extra
+  - texlive-pictures
+  - texlive-science
+  - xclip

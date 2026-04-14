@@ -1,62 +1,57 @@
 ---
-
-# Install my dotfiles from Github
-#
-- name: Check if user dotfiles already exists
-  stat:
-    path: "{{ ansible_env.HOME }}/.dotfiles/install.sh"
-  register: user_dotfiles
-
-- name: Check if root dotfiles already exists
-  stat:
-    path: "/root/.dotfiles/install.sh"
-  register: root_dotfiles
-  become: true
-
-- name: Update apt cache and install the "git", "curl", and "vim" packages
-  apt:
-    name:
-      - git
-      - vim
-      - curl
-    update_cache: yes
-    state: present
-    cache_valid_time: 3600
-  become: true
-
 - name: Ensure github.com is a known host
-  lineinfile:
-    dest: "{{ ansible_env.HOME }}/.ssh/known_hosts"
-    create: yes
+  ansible.builtin.known_hosts:
+    name: github.com
+    key: "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl"
     state: present
-    line: "github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="
-    regexp: "^github\\.com"
 
-- name: Clone dotfiles git repo
-  git:
-    repo: ssh://git@github.com/agude/dotfiles.git
-    dest: "{{ ansible_env.HOME }}/.dotfiles"
-    update: yes
-  when: user_dotfiles.stat.exists == False
+- name: Clone dotfiles
+  ansible.builtin.git:
+    repo: "{{ dotfiles_repo }}"
+    dest: "/home/{{ user }}/.dotfiles"
+    version: main
+    accept_hostkey: true
+  become: true
+  become_user: "{{ user }}"
 
-- name: Run the dotfiles installer in ".dotfiles"
-  shell: "{{ ansible_env.HOME }}/.dotfiles/install.sh"
-  args:
-    chdir: "{{ ansible_env.HOME }}/.dotfiles/"
-    executable: /bin/bash
+- name: Run dotfiles install
+  ansible.builtin.command:
+    cmd: "./install.sh --profile {{ dotfiles_profile }}"
+    chdir: "/home/{{ user }}/.dotfiles"
+  become: true
+  become_user: "{{ user }}"
+  changed_when: false
 
-# Also install for root user
-- name: Clone dotfiles git repo for root
-  git:
-    repo: https://github.com/agude/dotfiles.git
-    dest: /root/.dotfiles
-    update: yes
-  become: yes
-  when: root_dotfiles.stat.exists == False
+- name: Clone Knowledge repo
+  ansible.builtin.git:
+    repo: "{{ knowledge_repo }}"
+    dest: "/home/{{ user }}/Knowledge"
+    version: main
+    accept_hostkey: true
+  become: true
+  become_user: "{{ user }}"
 
-- name: Run the dotfiles installer in ".dotfiles" for root
-  shell: /root/.dotfiles/install.sh
-  args:
-    chdir: /root/.dotfiles
-    executable: /bin/bash
-  become: yes
+- name: Run Knowledge install
+  ansible.builtin.command:
+    cmd: scripts/install
+    chdir: "/home/{{ user }}/Knowledge"
+  become: true
+  become_user: "{{ user }}"
+  changed_when: false
+
+- name: Clone Wiki repo
+  ansible.builtin.git:
+    repo: "{{ wiki_repo }}"
+    dest: "/home/{{ user }}/Wiki"
+    version: main
+    accept_hostkey: true
+  become: true
+  become_user: "{{ user }}"
+
+- name: Run Wiki install
+  ansible.builtin.command:
+    cmd: scripts/install
+    chdir: "/home/{{ user }}/Wiki"
+  become: true
+  become_user: "{{ user }}"
+  changed_when: false

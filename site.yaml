@@ -1,0 +1,19 @@
+---
+- name: All Linux machines
+  hosts: all
+  roles:
+    - common
+    - livepatch
+    - uv
+    - claude_code
+
+- name: Desktop machines
+  hosts: desktops
+  roles:
+    - desktop
+    - cleanup
+
+- name: Raspberry Pi base setup
+  hosts: pis
+  roles:
+    - pi
