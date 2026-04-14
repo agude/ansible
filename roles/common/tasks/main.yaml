@@ -1,8 +1,21 @@
 ---
-- import_tasks: hostname.yaml
-- import_tasks: timezone.yaml
-- import_tasks: configure-apt.yaml
-- import_tasks: packages.yaml
-- import_tasks: sshd-harden.yaml
-- import_tasks: dotfiles.yaml
-- import_tasks: modify-sudo.yaml
+- name: Set hostname
+  ansible.builtin.import_tasks: hostname.yaml
+
+- name: Set timezone
+  ansible.builtin.import_tasks: timezone.yaml
+
+- name: Configure apt
+  ansible.builtin.import_tasks: configure-apt.yaml
+
+- name: Install packages
+  ansible.builtin.import_tasks: packages.yaml
+
+- name: Harden SSH
+  ansible.builtin.import_tasks: sshd-harden.yaml
+
+- name: Deploy dotfiles and repos
+  ansible.builtin.import_tasks: dotfiles.yaml
+
+- name: Configure sudo
+  ansible.builtin.import_tasks: modify-sudo.yaml

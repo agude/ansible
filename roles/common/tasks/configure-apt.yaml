@@ -14,8 +14,10 @@
     replace: "{{ item.replace }}"
   become: true
   loop:
-    - { regexp: '//\s"\${distro_id}:\${distro_codename}-updates";', replace: '\t"${distro_id}:${distro_codename}-updates";' }
-    - { regexp: '//\s"\${distro_id}:\${distro_codename}-backports";', replace: '\t"${distro_id}:${distro_codename}-backports";' }
+    - regexp: '//\s"\${distro_id}:\${distro_codename}-updates";'
+      replace: '\t"${distro_id}:${distro_codename}-updates";'
+    - regexp: '//\s"\${distro_id}:\${distro_codename}-backports";'
+      replace: '\t"${distro_id}:${distro_codename}-backports";'
 
 - name: Configure unattended-upgrades settings
   ansible.builtin.replace:
@@ -24,8 +26,10 @@
     replace: "{{ item.replace }}"
   become: true
   loop:
-    - { regexp: '//Unattended-Upgrade::MinimalSteps "true";', replace: 'Unattended-Upgrade::MinimalSteps "true";' }
-    - { regexp: '//Unattended-Upgrade::Remove-Unused-Dependencies "false";', replace: 'Unattended-Upgrade::Remove-Unused-Dependencies "true";' }
+    - regexp: '//Unattended-Upgrade::MinimalSteps "true";'
+      replace: 'Unattended-Upgrade::MinimalSteps "true";'
+    - regexp: '//Unattended-Upgrade::Remove-Unused-Dependencies "false";'
+      replace: 'Unattended-Upgrade::Remove-Unused-Dependencies "true";'
 
 - name: Deploy auto-upgrades config
   ansible.builtin.template:
