@@ -9,9 +9,9 @@ repos can take over. It handles what they can't: packages, users, SSH.
 
 | Host | Group | Profile | Purpose |
 |---|---|---|---|
-| desktop | desktops | default | Ubuntu desktop |
-| laptop | desktops | default | Ubuntu laptop |
-| pi | pis | server | Raspberry Pi (base setup, then GitOps) |
+| einstein | desktops | default | Ubuntu desktop |
+| dirac | desktops | default | Ubuntu laptop (ex-Mac) |
+| kaon | pis | server | Raspberry Pi (base setup, then GitOps) |
 | synology | nas | synology | Synology NAS (dotfiles only, not in playbook) |
 
 ## Usage

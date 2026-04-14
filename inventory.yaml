@@ -2,14 +2,14 @@ all:
   children:
     desktops:
       hosts:
-        desktop:
-          ansible_host: desktop.local
-        laptop:
-          ansible_host: laptop.local
+        einstein:
+          ansible_host: einstein.local
+        dirac:
+          ansible_host: dirac.local
     pis:
       hosts:
-        pi:
-          ansible_host: pi.local
+        kaon:
+          ansible_host: kaon.local
     nas:
       hosts:
         synology:
