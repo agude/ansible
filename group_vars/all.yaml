@@ -5,3 +5,14 @@ dotfiles_profile: default
 
 knowledge_repo: git@github.com:agude/knowledge-base-core.git
 wiki_repo: git@github.com:agude/wiki-core.git
+
+common_packages:
+  - curl
+  - git
+  - htop
+  - jq
+  - neovim
+  - openssh-server
+  - ripgrep
+  - screen
+  - xxd
