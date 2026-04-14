@@ -3,6 +3,7 @@
   hosts: all
   roles:
     - common
+    - livepatch
 
 - name: Desktop machines
   hosts: desktops

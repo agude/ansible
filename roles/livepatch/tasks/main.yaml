@@ -1,0 +1,34 @@
+---
+# Ubuntu Pro + Livepatch. Token stored in Ansible Vault.
+# Free for up to 5 personal machines.
+
+- name: Install ubuntu-pro-client
+  ansible.builtin.apt:
+    name: ubuntu-pro-client
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: Check if already attached to Ubuntu Pro
+  ansible.builtin.stat:
+    path: /var/lib/ubuntu-advantage/machine-token.json
+  register: livepatch_token_file
+
+- name: Attach to Ubuntu Pro
+  ansible.builtin.command:
+    cmd: "pro attach {{ ubuntu_pro_token }}"
+  become: true
+  when: not livepatch_token_file.stat.exists
+  changed_when: true
+  no_log: true
+
+- name: Ensure livepatch is enabled
+  ansible.builtin.command:
+    cmd: pro enable livepatch --assume-yes
+  become: true
+  register: livepatch_result
+  changed_when: "'already enabled' not in livepatch_result.stdout"
+  failed_when:
+    - livepatch_result.rc != 0
+    - "'already enabled' not in livepatch_result.stdout"

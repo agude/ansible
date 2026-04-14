@@ -43,5 +43,6 @@ Wiki           self-registers hooks + skills via scripts/install
 | Role | Applied to | Purpose |
 |---|---|---|
 | common | all | SSH, packages, apt config, dotfiles + Knowledge + Wiki |
+| livepatch | all | Ubuntu Pro + kernel live patching |
 | desktop | desktops | Desktop-specific packages |
 | pi | pis | Docker for GitOps container management |
