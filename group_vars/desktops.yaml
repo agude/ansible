@@ -14,9 +14,14 @@ desktop_packages:
   - meld
   - pandoc
   - picard
+  - python3
+  - python3-pip
+  - python3-venv
+  - tesseract-ocr
   - texlive-fonts-recommended
   - texlive-latex-base
   - texlive-latex-extra
   - texlive-pictures
   - texlive-science
+  - universal-ctags
   - xclip

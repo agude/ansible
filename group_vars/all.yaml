@@ -7,7 +7,9 @@ knowledge_repo: git@github.com:agude/knowledge-base-core.git
 wiki_repo: git@github.com:agude/wiki-core.git
 
 common_packages:
+  - bat
   - curl
+  - fzf
   - git
   - htop
   - jq
@@ -15,4 +17,5 @@ common_packages:
   - openssh-server
   - ripgrep
   - screen
+  - tree
   - xxd
