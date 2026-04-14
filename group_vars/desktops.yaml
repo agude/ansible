@@ -16,5 +16,4 @@ desktop_packages:
   - texlive-latex-extra
   - texlive-pictures
   - texlive-science
-  - universal-ctags
   - xclip
