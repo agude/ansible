@@ -1,0 +1,29 @@
+---
+# Pull incoming pubkeys from every inventory source that targets this
+# host and install them into authorized_keys. delegate_to on the slurp
+# requires the control machine to have working SSH to each source —
+# bootstrap the first connection manually (ssh-copy-id).
+
+- name: Fetch pubkeys from sources that target this host
+  ansible.builtin.slurp:
+    src: "/home/{{ user }}/.ssh/id_ed25519_{{ source }}_to_{{ inventory_hostname }}.pub"
+  loop: "{{ groups['all'] | difference([inventory_hostname]) }}"
+  loop_control:
+    loop_var: source
+  delegate_to: "{{ source }}"
+  when: inventory_hostname in hostvars[source].ssh_outbound_targets | default([])
+  register: incoming_pubkeys
+  failed_when: false
+
+- name: Authorize incoming pubkeys
+  ansible.posix.authorized_key:
+    user: "{{ user }}"
+    state: present
+    key: "{{ item.content | b64decode | trim }}"
+  loop: "{{ incoming_pubkeys.results | default([]) }}"
+  loop_control:
+    label: "from {{ item.source | default('?') }}"
+  when:
+    - item.content is defined
+    - not (item.skipped | default(false))
+  become: true

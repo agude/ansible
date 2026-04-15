@@ -17,6 +17,9 @@
 - name: Generate outbound SSH keys
   ansible.builtin.import_tasks: ssh-keys.yaml
 
+- name: Authorize incoming SSH keys
+  ansible.builtin.import_tasks: ssh-authorize.yaml
+
 - name: Deploy dotfiles and repos
   ansible.builtin.import_tasks: dotfiles.yaml
 
