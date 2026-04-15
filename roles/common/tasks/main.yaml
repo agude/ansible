@@ -14,6 +14,9 @@
 - name: Harden SSH
   ansible.builtin.import_tasks: sshd-harden.yaml
 
+- name: Generate outbound SSH keys
+  ansible.builtin.import_tasks: ssh-keys.yaml
+
 - name: Deploy dotfiles and repos
   ansible.builtin.import_tasks: dotfiles.yaml
 

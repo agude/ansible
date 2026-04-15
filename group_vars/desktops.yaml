@@ -1,6 +1,13 @@
 ---
 dotfiles_profile: default
 
+ssh_outbound_targets:
+  - dirac
+  - einstein
+  - kaon
+  - synology
+  - github
+
 desktop_packages:
   - bats
   - build-essential

@@ -1,0 +1,24 @@
+---
+# Generate per-route ed25519 keys: id_ed25519_<self>_to_<target>.
+# Authorizing the pubkey on the target side stays manual.
+
+- name: Ensure outbound SSH keypairs exist
+  community.crypto.openssh_keypair:
+    path: "/home/{{ user }}/.ssh/id_ed25519_{{ inventory_hostname }}_to_{{ item }}"
+    type: ed25519
+    comment: "{{ user }}@{{ inventory_hostname }} -> {{ item }}"
+  become: true
+  become_user: "{{ user }}"
+  loop: "{{ ssh_outbound_targets | default([]) }}"
+  when: item != inventory_hostname
+  register: ssh_keypairs
+
+- name: Show new pubkeys to authorize
+  ansible.builtin.debug:
+    msg: "{{ item.filename }}.pub: {{ item.public_key }}"
+  loop: "{{ ssh_keypairs.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when:
+    - item.changed | default(false)
+    - item.public_key is defined
