@@ -30,3 +30,4 @@ common_packages:
   - screen
   - tree
   - xxd
+  - zsh
