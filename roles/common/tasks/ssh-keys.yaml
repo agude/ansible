@@ -43,6 +43,15 @@
     mode: "0700"
   become: true
 
+- name: Ensure ~/.ssh/sockets exists for ControlMaster
+  ansible.builtin.file:
+    path: "/home/{{ user }}/.ssh/sockets"
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: "0700"
+  become: true
+
 - name: Manage SSH config block for outbound routes
   ansible.builtin.blockinfile:
     path: "/home/{{ user }}/.ssh/config"
@@ -53,4 +62,15 @@
     marker: "# {mark} ANSIBLE MANAGED: outbound routes"
     insertbefore: BOF
     block: "{{ lookup('template', 'ssh_config_managed.j2') }}"
+  become: true
+
+- name: Manage SSH config block for general settings
+  ansible.builtin.blockinfile:
+    path: "/home/{{ user }}/.ssh/config"
+    create: true
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: "0600"
+    marker: "# {mark} ANSIBLE MANAGED: general settings"
+    block: "{{ lookup('template', 'ssh_config_general.j2') }}"
   become: true

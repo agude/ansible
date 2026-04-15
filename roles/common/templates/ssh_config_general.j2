@@ -1,0 +1,21 @@
+# General Settings
+Host *
+    Compression yes
+    IdentitiesOnly yes
+    PasswordAuthentication no
+
+    # Keep connections alive (ping every 60s)
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+
+    # Default to NO X11 forwarding for security
+    ForwardX11 no
+    ForwardX11Trusted no
+
+    # Auto-add passphrase keys to ssh-agent
+    AddKeysToAgent yes
+
+    # Multiplexing for instant subsequent connections
+    ControlMaster auto
+    ControlPath ~/.ssh/sockets/%C
+    ControlPersist 10m
