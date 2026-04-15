@@ -4,15 +4,15 @@ all:
     desktops:
       hosts:
         einstein:
-          ansible_host: einstein.local
+          ansible_host: einstein.localdomain
         dirac:
-          ansible_host: dirac.local
+          ansible_host: dirac.localdomain
     pis:
       hosts:
         kaon:
-          ansible_host: kaon.local
+          ansible_host: kaon.localdomain
     nas:
       hosts:
         synology:
-          ansible_host: synology.local
+          ansible_host: synology.localdomain
           dotfiles_profile: synology
