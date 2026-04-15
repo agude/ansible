@@ -1,0 +1,14 @@
+{% for target in ssh_outbound_targets | default([]) if target != inventory_hostname %}
+{% if target == 'github' %}
+Host github github.com
+    User git
+    HostName github.com
+{% else %}
+Host {{ target }}
+    User {{ user }}
+    HostName {{ hostvars[target].ansible_host }}
+{% endif %}
+    IdentityFile ~/.ssh/id_ed25519_{{ inventory_hostname }}_to_{{ target }}
+    IdentitiesOnly yes
+
+{% endfor %}

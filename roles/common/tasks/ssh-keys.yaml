@@ -33,3 +33,24 @@
   loop_control:
     label: "{{ item.item.item | default('n/a') }}"
   when: item.content is defined
+
+- name: Ensure ~/.ssh exists
+  ansible.builtin.file:
+    path: "/home/{{ user }}/.ssh"
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: "0700"
+  become: true
+
+- name: Manage SSH config block for outbound routes
+  ansible.builtin.blockinfile:
+    path: "/home/{{ user }}/.ssh/config"
+    create: true
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: "0600"
+    marker: "# {mark} ANSIBLE MANAGED: outbound routes"
+    insertbefore: BOF
+    block: "{{ lookup('template', 'ssh_config_managed.j2') }}"
+  become: true
