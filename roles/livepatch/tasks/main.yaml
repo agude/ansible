@@ -1,6 +1,11 @@
 ---
 # Ubuntu Pro + Livepatch. Token stored in Ansible Vault.
 # Free for up to 5 personal machines.
+# Livepatch only supports x86_64 — skip on ARM and other architectures.
+
+- name: End play for non-x86_64 hosts
+  ansible.builtin.meta: end_role
+  when: ansible_architecture != "x86_64"
 
 - name: Install ubuntu-pro-client
   ansible.builtin.apt:

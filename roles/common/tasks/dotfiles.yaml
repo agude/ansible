@@ -10,7 +10,7 @@
     repo: "{{ dotfiles_repo }}"
     dest: "/home/{{ user }}/.dotfiles"
     version: main
-    accept_hostkey: true
+    ssh_opts: "-o ForwardAgent=yes"
   become: true
   become_user: "{{ user }}"
 
@@ -27,7 +27,7 @@
     repo: "{{ knowledge_repo }}"
     dest: "/home/{{ user }}/Knowledge"
     version: main
-    accept_hostkey: true
+    ssh_opts: "-o ForwardAgent=yes"
   become: true
   become_user: "{{ user }}"
 
@@ -44,7 +44,7 @@
     repo: "{{ wiki_repo }}"
     dest: "/home/{{ user }}/Wiki"
     version: main
-    accept_hostkey: true
+    ssh_opts: "-o ForwardAgent=yes"
   become: true
   become_user: "{{ user }}"
 
