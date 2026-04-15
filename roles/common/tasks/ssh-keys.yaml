@@ -1,24 +1,35 @@
 ---
 # Generate per-route ed25519 keys: id_ed25519_<self>_to_<target>.
-# Authorizing the pubkey on the target side stays manual.
+# Uses ssh-keygen with `creates:` so existing keys (including
+# passphrase-protected ones) are never touched. Authorization on the
+# target side stays manual.
 
 - name: Ensure outbound SSH keypairs exist
-  community.crypto.openssh_keypair:
-    path: "/home/{{ user }}/.ssh/id_ed25519_{{ inventory_hostname }}_to_{{ item }}"
-    type: ed25519
-    comment: "{{ user }}@{{ inventory_hostname }} -> {{ item }}"
+  ansible.builtin.command:
+    cmd: >-
+      ssh-keygen -t ed25519 -N '' -q
+      -C "{{ user }}@{{ inventory_hostname }} -> {{ item }}"
+      -f /home/{{ user }}/.ssh/id_ed25519_{{ inventory_hostname }}_to_{{ item }}
+    creates: "/home/{{ user }}/.ssh/id_ed25519_{{ inventory_hostname }}_to_{{ item }}"
   become: true
   become_user: "{{ user }}"
   loop: "{{ ssh_outbound_targets | default([]) }}"
   when: item != inventory_hostname
-  register: ssh_keypairs
+  register: ssh_keygen
 
-- name: Show new pubkeys to authorize
-  ansible.builtin.debug:
-    msg: "{{ item.filename }}.pub: {{ item.public_key }}"
-  loop: "{{ ssh_keypairs.results }}"
+- name: Read freshly-created pubkeys
+  ansible.builtin.slurp:
+    src: "/home/{{ user }}/.ssh/id_ed25519_{{ inventory_hostname }}_to_{{ item.item }}.pub"
+  loop: "{{ ssh_keygen.results }}"
   loop_control:
-    label: "{{ item.item }}"
-  when:
-    - item.changed | default(false)
-    - item.public_key is defined
+    label: "{{ item.item | default('skipped') }}"
+  when: item.changed | default(false)
+  register: new_pubkeys
+
+- name: Show new pubkeys to authorize on remote
+  ansible.builtin.debug:
+    msg: "{{ item.content | b64decode | trim }}"
+  loop: "{{ new_pubkeys.results | default([]) }}"
+  loop_control:
+    label: "{{ item.item.item | default('n/a') }}"
+  when: item.content is defined
