@@ -10,8 +10,8 @@ HostKey /etc/ssh/ssh_host_rsa_key
 HostKeyAlgorithms ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-512,rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-256
 RequiredRSASize 3072
 
-# Key exchange — post-quantum first
-KexAlgorithms mlkem768x25519-sha256,sntrup761x25519-sha512@openssh.com,curve25519-sha256,curve25519-sha256@libssh.org
+# Key exchange — post-quantum first (mlkem768 requires OpenSSH >= 10.0)
+KexAlgorithms {% if openssh_major | int >= 10 %}mlkem768x25519-sha256,{% endif %}sntrup761x25519-sha512@openssh.com,curve25519-sha256,curve25519-sha256@libssh.org
 
 # AEAD ciphers only
 Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com

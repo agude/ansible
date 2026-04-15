@@ -1,6 +1,16 @@
 ---
 # SSH hardening based on current best practices.
 
+- name: Get OpenSSH version
+  ansible.builtin.command: ssh -V
+  register: ssh_version_raw
+  changed_when: false
+  check_mode: false
+
+- name: Parse OpenSSH major version
+  ansible.builtin.set_fact:
+    openssh_major: "{{ ssh_version_raw.stderr | regex_search('OpenSSH_(\\d+)', '\\1') | first | int }}"
+
 - name: Create ssh-user group to restrict logins
   ansible.builtin.group:
     name: ssh-user
