@@ -21,6 +21,10 @@ jobs:
 
       - name: Ansible syntax check
         run: ansible-playbook site.yaml --syntax-check
+        env:
+          ANSIBLE_VAULT_PASSWORD_FILE: /dev/null
 
       - name: Ansible lint
         run: ansible-lint
+        env:
+          ANSIBLE_VAULT_PASSWORD_FILE: /dev/null
