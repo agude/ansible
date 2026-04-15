@@ -20,12 +20,14 @@
         url: "https://github.com/astral-sh/uv/releases/download/{{ uv_version }}/uv-{{ uv_arch }}-unknown-linux-gnu.tar.gz"
         dest: "/tmp/uv-{{ uv_version }}.tar.gz"
         mode: "0644"
+      check_mode: false
 
     - name: Extract uv
       ansible.builtin.unarchive:
         src: "/tmp/uv-{{ uv_version }}.tar.gz"
         dest: /tmp
         remote_src: true
+      check_mode: false
 
     - name: Install uv and uvx to /usr/local/bin
       ansible.builtin.copy:
