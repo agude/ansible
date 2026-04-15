@@ -13,7 +13,7 @@
   block:
     - name: Set uv architecture
       ansible.builtin.set_fact:
-        uv_arch: "{{ 'x86_64' if ansible_architecture == 'x86_64' else 'aarch64' }}"
+        uv_arch: "{{ 'x86_64' if ansible_facts['architecture'] == 'x86_64' else 'aarch64' }}"
 
     - name: Download uv tarball
       ansible.builtin.get_url:
