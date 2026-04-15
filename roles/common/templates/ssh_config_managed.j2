@@ -3,6 +3,14 @@
 Host github github.com
     User git
     HostName github.com
+    ForwardX11 no
+    ForwardX11Trusted no
+{% elif target == 'synology' %}
+Host {{ target }}
+    User {{ user }}
+    HostName {{ hostvars[target].ansible_host }}
+    ForwardX11 no
+    ForwardX11Trusted no
 {% else %}
 Host {{ target }}
     User {{ user }}
