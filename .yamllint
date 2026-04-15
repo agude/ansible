@@ -1,6 +1,10 @@
 ---
 extends: default
 
+ignore: |
+  .venv/
+  .git/
+
 rules:
   line-length: disable
   truthy:

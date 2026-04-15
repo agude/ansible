@@ -1,5 +1,9 @@
 # Ansible retry files
 *.retry
 
-# Valut Pass
+# Vault Pass
 .vault_pass.txt
+
+# uv / Python
+.venv/
+__pycache__/
