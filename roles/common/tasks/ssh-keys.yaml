@@ -1,38 +1,11 @@
 ---
 # Generate per-route ed25519 keys: id_ed25519_<self>_to_<target>.
 # Uses ssh-keygen with `creates:` so existing keys (including
-# passphrase-protected ones) are never touched. Authorization on the
-# target side stays manual.
-
-- name: Ensure outbound SSH keypairs exist
-  ansible.builtin.command:
-    cmd: >-
-      ssh-keygen -t ed25519 -N '' -q
-      -C "{{ user }}@{{ inventory_hostname }} -> {{ item }}"
-      -f /home/{{ user }}/.ssh/id_ed25519_{{ inventory_hostname }}_to_{{ item }}
-    creates: "/home/{{ user }}/.ssh/id_ed25519_{{ inventory_hostname }}_to_{{ item }}"
-  become: true
-  become_user: "{{ user }}"
-  loop: "{{ ssh_outbound_targets | default([]) }}"
-  when: item != inventory_hostname
-  register: ssh_keygen
-
-- name: Read freshly-created pubkeys
-  ansible.builtin.slurp:
-    src: "/home/{{ user }}/.ssh/id_ed25519_{{ inventory_hostname }}_to_{{ item.item }}.pub"
-  loop: "{{ ssh_keygen.results }}"
-  loop_control:
-    label: "{{ item.item | default('skipped') }}"
-  when: item.changed | default(false)
-  register: new_pubkeys
-
-- name: Show new pubkeys to authorize on remote
-  ansible.builtin.debug:
-    msg: "{{ item.content | b64decode | trim }}"
-  loop: "{{ new_pubkeys.results | default([]) }}"
-  loop_control:
-    label: "{{ item.item.item | default('n/a') }}"
-  when: item.content is defined
+# passphrase-protected ones) are never touched.
+#
+# After generation, all pubkeys are fetched into the repo's pubkeys/
+# directory. Runs unconditionally to backfill keys from prior runs.
+# Commit and push to distribute to other machines.
 
 - name: Ensure ~/.ssh exists
   ansible.builtin.file:
@@ -51,6 +24,30 @@
     group: "{{ user }}"
     mode: "0700"
   become: true
+
+- name: Ensure outbound SSH keypairs exist
+  ansible.builtin.command:
+    cmd: >-
+      ssh-keygen -t ed25519 -N '' -q
+      -C "{{ user }}@{{ inventory_hostname }} -> {{ item }}"
+      -f /home/{{ user }}/.ssh/id_ed25519_{{ inventory_hostname }}_to_{{ item }}
+    creates: "/home/{{ user }}/.ssh/id_ed25519_{{ inventory_hostname }}_to_{{ item }}"
+  become: true
+  become_user: "{{ user }}"
+  loop: "{{ ssh_outbound_targets | default([]) | difference([inventory_hostname]) }}"
+
+# --- Collect all pubkeys into the repo (backfills prior runs) ---
+
+- name: Fetch pubkeys into repo store
+  ansible.builtin.fetch:
+    src: "/home/{{ user }}/.ssh/id_ed25519_{{ inventory_hostname }}_to_{{ item }}.pub"
+    dest: "{{ playbook_dir }}/pubkeys/{{ inventory_hostname }}_to_{{ item }}.pub"
+    flat: true
+  loop: "{{ ssh_outbound_targets | default([]) | difference([inventory_hostname]) }}"
+  loop_control:
+    label: "{{ inventory_hostname }}_to_{{ item }}"
+
+# --- Write ~/.ssh/config ---
 
 - name: Manage SSH config block for outbound routes
   ansible.builtin.blockinfile:

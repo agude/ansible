@@ -1,0 +1,4 @@
+# Only allow .pub files — prevent accidental private key commits
+*
+!.gitignore
+!*.pub
