@@ -72,8 +72,7 @@
 
 - name: Check for weak DH moduli (< 3072 bits)
   ansible.builtin.shell:
-    cmd: set -o pipefail && awk '$5 < 3071 && !/^#/' /etc/ssh/moduli | head -1
-    executable: /bin/bash
+    cmd: awk '$5 < 3071 && !/^#/ { print; exit }' /etc/ssh/moduli
   become: true
   register: common_weak_moduli
   changed_when: false

@@ -15,3 +15,10 @@
     name: "{{ common_packages }}"
     state: present
   become: true
+
+- name: Install just from apt (Ubuntu only)
+  ansible.builtin.apt:
+    name: just
+    state: present
+  become: true
+  when: ansible_facts['distribution'] == "Ubuntu"

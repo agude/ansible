@@ -1,5 +1,5 @@
 ---
-# Base setup before GitOps takes over container management.
+# Raspberry Pi setup: Docker, dependencies, and pi-cron-automation.
 
 - name: Install Docker prerequisites
   ansible.builtin.apt:
@@ -33,13 +33,15 @@
     state: present
   become: true
 
-- name: Install Docker
+- name: Install Docker and pi-cron dependencies
   ansible.builtin.apt:
     name:
       - docker-ce
       - docker-ce-cli
       - containerd.io
       - docker-compose-plugin
+      - git
+      - curl
     state: present
     update_cache: true
   become: true
@@ -50,3 +52,40 @@
     groups: docker
     append: true
   become: true
+
+- name: Install just from official binary
+  ansible.builtin.shell:
+    cmd: curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+    creates: /usr/local/bin/just
+  become: true
+
+- name: Install yq
+  ansible.builtin.get_url:
+    url: https://github.com/mikefarah/yq/releases/latest/download/yq_linux_arm64
+    dest: /usr/local/bin/yq
+    mode: "0755"
+  become: true
+
+- name: Clone pi-cron-automation
+  ansible.builtin.git:
+    repo: git@github.com:agude/pi-cron-automation.git
+    dest: "/home/{{ user }}/Projects/pi-cron-automation"
+    accept_hostkey: true
+  become: true
+  become_user: "{{ user }}"
+
+- name: Deploy archiver secrets
+  ansible.builtin.template:
+    src: env_archiver.j2
+    dest: "/home/{{ user }}/Projects/pi-cron-automation/.env_archiver"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: "0600"
+
+- name: Run reconciliation
+  ansible.builtin.command:
+    cmd: bash .system/reconcile.sh
+    chdir: "/home/{{ user }}/Projects/pi-cron-automation"
+  become: true
+  become_user: "{{ user }}"
+  changed_when: true
