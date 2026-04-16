@@ -3,13 +3,13 @@
 
 - name: Get OpenSSH version
   ansible.builtin.command: ssh -V
-  register: ssh_version_raw
+  register: common_ssh_version_raw
   changed_when: false
   check_mode: false
 
 - name: Parse OpenSSH major version
   ansible.builtin.set_fact:
-    openssh_major: "{{ ssh_version_raw.stderr | regex_search('OpenSSH_(\\d+)', '\\1') | first | int }}"
+    common_openssh_major: "{{ common_ssh_version_raw.stderr | regex_search('OpenSSH_(\\d+)', '\\1') | first | int }}"
 
 - name: Create ssh-user group to restrict logins
   ansible.builtin.group:
@@ -72,14 +72,16 @@
 
 - name: Check for weak DH moduli (< 3072 bits)
   ansible.builtin.shell:
-    cmd: awk '$5 < 3071 && !/^#/' /etc/ssh/moduli | head -1
+    cmd: set -o pipefail && awk '$5 < 3071 && !/^#/' /etc/ssh/moduli | head -1
+    executable: /bin/bash
   become: true
-  register: weak_moduli
+  register: common_weak_moduli
   changed_when: false
 
 - name: Remove weak DH moduli
   ansible.builtin.shell:
     cmd: awk '$5 >= 3071 || /^#/' /etc/ssh/moduli > /etc/ssh/moduli.safe && mv /etc/ssh/moduli.safe /etc/ssh/moduli
   become: true
-  when: weak_moduli.stdout | length > 0
+  changed_when: true
+  when: common_weak_moduli.stdout | length > 0
   notify: Restart sshd

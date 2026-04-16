@@ -2,9 +2,10 @@
 - name: Get current timezone
   ansible.builtin.command: timedatectl show --property=Timezone --value
   changed_when: false
-  register: current_tz
+  register: common_current_tz
 
 - name: Set timezone
   ansible.builtin.command: timedatectl set-timezone America/Los_Angeles
   become: true
-  when: current_tz.stdout.strip() != "America/Los_Angeles"
+  changed_when: true
+  when: common_current_tz.stdout.strip() != "America/Los_Angeles"
