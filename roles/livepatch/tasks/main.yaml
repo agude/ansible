@@ -5,7 +5,7 @@
 
 - name: End play for non-x86_64 hosts
   ansible.builtin.meta: end_role
-  when: ansible_architecture != "x86_64"
+  when: ansible_facts['architecture'] != "x86_64"
 
 - name: Install ubuntu-pro-client
   ansible.builtin.apt:
