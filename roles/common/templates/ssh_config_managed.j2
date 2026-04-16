@@ -6,13 +6,13 @@ Host github github.com
     ForwardX11 no
     ForwardX11Trusted no
 {% elif target == 'synology' %}
-Host {{ target }}
+Host {{ target }} {{ hostvars[target].ansible_host }}
     User {{ user }}
     HostName {{ hostvars[target].ansible_host }}
     ForwardX11 no
     ForwardX11Trusted no
 {% else %}
-Host {{ target }}
+Host {{ target }} {{ hostvars[target].ansible_host }}
     User {{ user }}
     HostName {{ hostvars[target].ansible_host }}
 {% endif %}
