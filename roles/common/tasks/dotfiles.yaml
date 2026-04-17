@@ -16,7 +16,7 @@
 
 - name: Run dotfiles install
   ansible.builtin.command:
-    cmd: "./install.sh --profile {{ dotfiles_profile }}"
+    cmd: script -qe -c "./install.sh --profile {{ dotfiles_profile }}" /dev/null
     chdir: "/home/{{ user }}/.dotfiles"
   become: true
   become_user: "{{ user }}"
@@ -38,6 +38,7 @@
   become: true
   become_user: "{{ user }}"
   changed_when: false
+  when: not ansible_check_mode
 
 - name: Clone Wiki repo
   ansible.builtin.git:
@@ -55,3 +56,4 @@
   become: true
   become_user: "{{ user }}"
   changed_when: false
+  when: not ansible_check_mode
