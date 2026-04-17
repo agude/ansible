@@ -10,3 +10,25 @@
     executable: /bin/bash
   become: true
   become_user: "{{ user }}"
+
+# Coat tree — modular hook dispatcher for Claude Code. Clones the
+# standalone repo into ~/.local/share and puts the dispatcher on PATH.
+# Hook scripts (the user's personal policy) are installed separately
+# by dotfiles into ~/.config/coat-tree/hooks.d/.
+- name: Clone coat-tree
+  ansible.builtin.git:
+    repo: "{{ coat_tree_repo }}"
+    dest: "/home/{{ user }}/.local/share/coat-tree"
+    version: main
+    ssh_opts: "-o ForwardAgent=yes"
+  become: true
+  become_user: "{{ user }}"
+
+- name: Symlink coat-tree dispatcher onto PATH
+  ansible.builtin.file:
+    src: "/home/{{ user }}/.local/share/coat-tree/dispatch.sh"
+    dest: "/home/{{ user }}/.local/bin/coat-tree"
+    state: link
+    force: true
+  become: true
+  become_user: "{{ user }}"

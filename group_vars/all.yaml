@@ -5,6 +5,7 @@ dotfiles_profile: default
 
 knowledge_repo: git@github.com:agude/knowledge-base-core.git
 wiki_repo: git@github.com:agude/wiki-core.git
+coat_tree_repo: git@github.com:agude/coat-tree.git
 
 uv_version: "0.7.12"
 
