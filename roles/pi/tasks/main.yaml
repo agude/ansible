@@ -53,10 +53,11 @@
     append: true
   become: true
 
-- name: Install just from official binary
+- name: Install just from official binary  # noqa: command-instead-of-module risky-shell-pipe
   ansible.builtin.shell:
-    cmd: curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+    cmd: set -o pipefail && curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
     creates: /usr/local/bin/just
+    executable: /bin/bash
   become: true
 
 - name: Install yq
@@ -70,6 +71,7 @@
   ansible.builtin.git:
     repo: git@github.com:agude/pi-cron-automation.git
     dest: "/home/{{ user }}/Projects/pi-cron-automation"
+    version: main
     accept_hostkey: true
   become: true
   become_user: "{{ user }}"
