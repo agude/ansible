@@ -1,0 +1,60 @@
+---
+- name: Ensure user bin directory exists
+  ansible.builtin.file:
+    path: "/volume1/homes/{{ user }}/bin"
+    state: directory
+    owner: "{{ user }}"
+    mode: "0755"
+
+- name: Deploy bind-mounts script
+  ansible.builtin.template:
+    src: bind-mounts.sh.j2
+    dest: "/volume1/homes/{{ user }}/bin/bind-mounts.sh"
+    owner: "{{ user }}"
+    mode: "0755"
+  register: synology_bind_mounts_script
+
+- name: Deploy bind-mounts config
+  ansible.builtin.template:
+    src: bind-mounts.conf.j2
+    dest: "/volume1/homes/{{ user }}/bin/bind-mounts.conf"
+    owner: "{{ user }}"
+    mode: "0644"
+  register: synology_bind_mounts_conf
+
+- name: Remind operator to register bind-mounts with DSM Task Scheduler
+  ansible.builtin.debug:
+    msg: |
+      Bind-mounts files changed. DSM cannot be configured from ansible.
+      Verify in DSM UI:
+        Control Panel -> Task Scheduler
+        Triggered Task -> User-defined script
+        Event: Boot-up, User: root
+        Command: /volume1/homes/{{ user }}/bin/bind-mounts.sh
+      Run the task once now to apply without rebooting.
+  when: synology_bind_mounts_script.changed or synology_bind_mounts_conf.changed
+
+- name: Ensure github.com is a known host
+  ansible.builtin.known_hosts:
+    name: github.com
+    key: "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl"
+    state: present
+  become: true
+  become_user: "{{ user }}"
+
+- name: Clone dotfiles
+  ansible.builtin.git:
+    repo: "{{ dotfiles_repo }}"
+    dest: "/volume1/homes/{{ user }}/.dotfiles"
+    version: main
+    ssh_opts: "-o ForwardAgent=yes"
+  become: true
+  become_user: "{{ user }}"
+
+- name: Run dotfiles install
+  ansible.builtin.command:
+    cmd: "./install.sh --profile {{ dotfiles_profile }}"
+    chdir: "/volume1/homes/{{ user }}/.dotfiles"
+  become: true
+  become_user: "{{ user }}"
+  changed_when: false

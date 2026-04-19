@@ -1,0 +1,8 @@
+#!/bin/bash
+# Managed by ansible (roles/synology). Do not edit on the NAS.
+while read -r src dst; do
+	[ -z "$src" ] && continue
+	[[ "$src" == \#* ]] && continue
+	mkdir -p "$dst"
+	mount --bind "$src" "$dst"
+done < /volume1/homes/{{ user }}/bin/bind-mounts.conf

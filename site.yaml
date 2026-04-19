@@ -1,6 +1,6 @@
 ---
 - name: All Linux machines
-  hosts: all
+  hosts: all:!nas
   roles:
     - common
     - livepatch
@@ -17,3 +17,42 @@
   hosts: pis
   roles:
     - pi
+
+- name: Synology NAS setup
+  hosts: nas
+  gather_facts: false
+  pre_tasks:
+    - name: Check for Python 3.9+ on the NAS
+      ansible.builtin.raw: |
+        for p in /usr/local/bin/python3.9 \
+                 /usr/local/bin/python3.10 \
+                 /usr/local/bin/python3.11 \
+                 /usr/local/bin/python3.12 \
+                 /usr/local/bin/python3.13; do
+          if [ -x "$p" ]; then echo "$p"; exit 0; fi
+        done
+        exit 1
+      register: synology_python_probe
+      changed_when: false
+      failed_when: false
+
+    - name: Fail with install instructions if no suitable Python
+      ansible.builtin.fail:
+        msg: |
+          No Python 3.9+ found on the NAS. DSM ships Python 3.8 and ansible
+          requires 3.9 or newer on the target.
+
+          Install via DSM GUI:
+            Main Menu -> Package Center -> search "Python 3.9" -> Install
+
+          Then re-run this playbook.
+      when: synology_python_probe.rc != 0
+
+    - name: Set discovered Python interpreter
+      ansible.builtin.set_fact:
+        ansible_python_interpreter: "{{ synology_python_probe.stdout_lines[0] }}"
+
+    - name: Gather facts with the discovered interpreter
+      ansible.builtin.setup:
+  roles:
+    - synology
