@@ -34,6 +34,15 @@
       Run the task once now to apply without rebooting.
   when: synology_bind_mounts_script.changed or synology_bind_mounts_conf.changed
 
+- name: Authorize incoming pubkeys
+  ansible.posix.authorized_key:
+    user: "{{ user }}"
+    state: present
+    key: "{{ lookup('file', item) }}"
+  loop: "{{ query('fileglob', playbook_dir ~ '/pubkeys/*_to_' ~ inventory_hostname ~ '.pub') }}"
+  loop_control:
+    label: "{{ item | basename }}"
+
 - name: Ensure github.com is a known host
   ansible.builtin.known_hosts:
     name: github.com
