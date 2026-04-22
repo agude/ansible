@@ -6,3 +6,41 @@
     update_cache: true
     cache_valid_time: 3600
   become: true
+
+- name: Install cifs-utils for NAS mounts
+  ansible.builtin.apt:
+    name: cifs-utils
+    state: present
+  become: true
+
+- name: Create SMB credentials file
+  ansible.builtin.copy:
+    dest: "/root/.{{ user }}_smb_credentials"
+    content: |
+      username={{ user }}
+      password={{ smb_password }}
+    owner: root
+    group: root
+    mode: "0600"
+  become: true
+  no_log: true
+
+- name: Create NAS mount directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: "0755"
+  loop: "{{ nas_home_mounts }}"
+  become: true
+
+- name: Mount NAS home shares
+  ansible.posix.mount:
+    src: "//{{ nas_ip }}{{ item.src }}"
+    path: "{{ item.path }}"
+    fstype: cifs
+    opts: "credentials=/root/.{{ user }}_smb_credentials,username={{ user }},uid={{ user }},gid={{ user }},file_mode=0644,dir_mode=0755"
+    state: mounted
+  loop: "{{ nas_home_mounts }}"
+  become: true
