@@ -25,6 +25,7 @@ ssh_outbound_targets:
 
 desktop_packages:
   - bats
+  - ttf-mscorefonts-installer
   - build-essential
   - cmake
   - gimp

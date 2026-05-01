@@ -1,4 +1,15 @@
 ---
+- name: Install Firefox from Mozilla deb repo
+  ansible.builtin.import_tasks: firefox.yaml
+
+- name: Accept Microsoft fonts EULA
+  ansible.builtin.debconf:
+    name: ttf-mscorefonts-installer
+    question: msttcorefonts/accepted-mscorefonts-eula
+    value: "true"
+    vtype: boolean
+  become: true
+
 - name: Install desktop packages
   ansible.builtin.apt:
     name: "{{ desktop_packages }}"

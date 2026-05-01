@@ -1,0 +1,47 @@
+---
+# Firefox snap on Ubuntu has broken font rendering due to sandbox restrictions.
+# Install from Mozilla's official deb repo instead.
+
+- name: Remove Firefox snap
+  community.general.snap:
+    name: firefox
+    state: absent
+  become: true
+
+- name: Create APT keyrings directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Download Mozilla APT signing key
+  ansible.builtin.get_url:
+    url: https://packages.mozilla.org/apt/repo-signing-key.gpg
+    dest: /etc/apt/keyrings/packages.mozilla.org.asc
+    mode: "0644"
+  become: true
+
+- name: Add Mozilla APT repository
+  ansible.builtin.apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main"
+    filename: mozilla
+    state: present
+  become: true
+
+- name: Pin Mozilla repo to override Ubuntu's snap package
+  ansible.builtin.copy:
+    dest: /etc/apt/preferences.d/mozilla
+    content: |
+      Package: *
+      Pin: origin packages.mozilla.org
+      Pin-Priority: 1000
+    mode: "0644"
+  become: true
+
+- name: Install Firefox from Mozilla repo
+  ansible.builtin.apt:
+    name: firefox
+    state: present
+    update_cache: true
+  become: true
