@@ -5,6 +5,20 @@
     cache_valid_time: 3600
   become: true
 
+- name: Gather package facts for Firefox check
+  ansible.builtin.package_facts:
+    manager: apt
+
+- name: Remove Ubuntu Firefox transitional package
+  ansible.builtin.apt:
+    name: firefox
+    state: absent
+    purge: true
+  become: true
+  when:
+    - ansible_facts.packages['firefox'] is defined
+    - ansible_facts.packages['firefox'][0].version is match('^1:')
+
 - name: Upgrade installed packages
   ansible.builtin.apt:
     upgrade: safe
