@@ -9,5 +9,5 @@
   ansible.builtin.command:
     cmd: ubuntu-drivers autoinstall
   become: true
-  register: nvidia_install
-  changed_when: "'Installing' in nvidia_install.stdout"
+  register: desktop_nvidia_install
+  changed_when: "'Installing' in desktop_nvidia_install.stdout"
