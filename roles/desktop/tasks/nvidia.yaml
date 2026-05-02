@@ -1,0 +1,13 @@
+---
+- name: Install ubuntu-drivers-common
+  ansible.builtin.apt:
+    name: ubuntu-drivers-common
+    state: present
+  become: true
+
+- name: Install recommended NVIDIA driver
+  ansible.builtin.command:
+    cmd: ubuntu-drivers autoinstall
+  become: true
+  register: nvidia_install
+  changed_when: "'Installing' in nvidia_install.stdout"

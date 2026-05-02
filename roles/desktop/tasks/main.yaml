@@ -1,4 +1,15 @@
 ---
+- name: Check for NVIDIA GPU
+  ansible.builtin.shell:
+    cmd: lspci | grep -qi nvidia
+  register: nvidia_check
+  changed_when: false
+  failed_when: false
+
+- name: Install NVIDIA drivers
+  ansible.builtin.import_tasks: nvidia.yaml
+  when: nvidia_check.rc == 0
+
 - name: Install Firefox from Mozilla deb repo
   ansible.builtin.import_tasks: firefox.yaml
 
