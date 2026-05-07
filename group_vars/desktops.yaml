@@ -23,8 +23,11 @@ ssh_outbound_targets:
   - synology
   - github
 
+czkawka_version: "11.0.1"
+
 desktop_packages:
   - bats
+  - libimage-exiftool-perl
   - ttf-mscorefonts-installer
   - build-essential
   - cmake

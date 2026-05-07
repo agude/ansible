@@ -1,0 +1,37 @@
+---
+# Install czkawka-cli from GitHub releases.
+# Pin version in group_vars/desktops.yaml to control updates.
+
+- name: Check installed czkawka version
+  ansible.builtin.command: czkawka_cli --version
+  register: czkawka_installed
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Install czkawka {{ czkawka_version }}
+  when: czkawka_version not in czkawka_installed.stdout
+  block:
+    - name: Set czkawka architecture
+      ansible.builtin.set_fact:
+        czkawka_arch: "{{ 'x86_64' if ansible_facts['architecture'] == 'x86_64' else 'arm64' }}"
+
+    - name: Download czkawka binary
+      ansible.builtin.get_url:
+        url: "https://github.com/qarmin/czkawka/releases/download/{{ czkawka_version }}/linux_czkawka_cli_{{ czkawka_arch }}"
+        dest: /tmp/czkawka_cli
+        mode: "0755"
+      check_mode: false
+
+    - name: Install czkawka to /usr/local/bin
+      ansible.builtin.copy:
+        src: /tmp/czkawka_cli
+        dest: /usr/local/bin/czkawka_cli
+        mode: "0755"
+        remote_src: true
+      become: true
+
+    - name: Clean up downloaded binary
+      ansible.builtin.file:
+        path: /tmp/czkawka_cli
+        state: absent
