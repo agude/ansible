@@ -17,7 +17,8 @@
 - name: Local LLM workstation (GPU required)
   hosts: einstein
   roles:
-    - ollama
+    - role: ollama
+      tags: [ollama]
 
 - name: Raspberry Pi base setup
   hosts: pis
