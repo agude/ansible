@@ -1,0 +1,77 @@
+---
+# Install Ollama for local LLM inference with GPU acceleration.
+# Creates custom models with extended context for coding assistants.
+
+- name: Install Ollama  # noqa: command-instead-of-module risky-shell-pipe
+  ansible.builtin.shell:
+    cmd: set -o pipefail && curl -fsSL https://ollama.com/install.sh | sh
+    creates: /usr/local/bin/ollama
+    executable: /bin/bash
+  become: true
+
+- name: Ensure ollama service is running
+  ansible.builtin.systemd:
+    name: ollama
+    state: started
+    enabled: true
+  become: true
+
+- name: Wait for Ollama API to be ready
+  ansible.builtin.uri:
+    url: http://localhost:11434/api/tags
+    method: GET
+  register: ollama_api
+  until: ollama_api.status == 200
+  retries: 10
+  delay: 2
+
+- name: Pull base model (qwen3:8b)
+  ansible.builtin.command:
+    cmd: ollama pull qwen3:8b
+  register: ollama_pull
+  changed_when: "'pulling' in ollama_pull.stdout"
+
+- name: Create Modelfile for extended context
+  ansible.builtin.copy:
+    dest: "/tmp/qwen3-8b-32k.Modelfile"
+    content: |
+      FROM qwen3:8b
+      PARAMETER num_ctx 32768
+    mode: "0644"
+
+- name: Check if custom model exists
+  ansible.builtin.command:
+    cmd: ollama show qwen3:8b-32k
+  register: ollama_model_check
+  failed_when: false
+  changed_when: false
+
+- name: Create custom model with 32k context
+  ansible.builtin.command:
+    cmd: ollama create qwen3:8b-32k -f /tmp/qwen3-8b-32k.Modelfile
+  when: ollama_model_check.rc != 0
+  changed_when: true
+
+- name: Clean up Modelfile
+  ansible.builtin.file:
+    path: /tmp/qwen3-8b-32k.Modelfile
+    state: absent
+
+# OpenCode: Claude Code-like frontend for local models
+- name: Install OpenCode  # noqa: command-instead-of-module risky-shell-pipe
+  ansible.builtin.shell:
+    cmd: set -o pipefail && curl -fsSL https://opencode.ai/install | bash
+    creates: "/home/{{ user }}/.opencode/bin/opencode"
+    executable: /bin/bash
+  become: true
+  become_user: "{{ user }}"
+
+- name: Ensure OpenCode config directory exists
+  ansible.builtin.file:
+    path: "/home/{{ user }}/.config/opencode"
+    state: directory
+    mode: "0700"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+  become: true
+  become_user: "{{ user }}"

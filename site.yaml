@@ -14,6 +14,11 @@
     - desktop
     - cleanup
 
+- name: Local LLM workstation (GPU required)
+  hosts: einstein
+  roles:
+    - ollama
+
 - name: Raspberry Pi base setup
   hosts: pis
   roles:
