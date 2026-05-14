@@ -29,13 +29,17 @@
     state: present
   become: true
 
-- name: Pin Mozilla repo to override Ubuntu's snap package
+- name: Pin Mozilla repo and block Ubuntu's snap transitional package
   ansible.builtin.copy:
     dest: /etc/apt/preferences.d/mozilla
     content: |
       Package: *
       Pin: origin packages.mozilla.org
       Pin-Priority: 1000
+
+      Package: firefox*
+      Pin: release o=Ubuntu
+      Pin-Priority: -1
     mode: "0644"
   become: true
 
