@@ -67,3 +67,7 @@
     state: mounted
   loop: "{{ nas_home_mounts }}"
   become: true
+
+- name: Configure WireGuard VPN
+  ansible.builtin.import_tasks: wireguard.yaml
+  when: wireguard_private_key is defined
