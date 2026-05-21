@@ -1,0 +1,24 @@
+network:
+  version: 2
+  tunnels:
+    wg0:
+      renderer: NetworkManager
+      addresses:
+      - "{{ wireguard_address }}"
+      nameservers:
+        addresses:
+        - {{ wireguard_dns }}
+      mode: "wireguard"
+      keys:
+        private: "{{ wireguard_private_key }}"
+      peers:
+      - endpoint: "{{ wireguard_endpoint }}"
+        keys:
+          public: "{{ wireguard_peer_public_key }}"
+        allowed-ips:
+        - "{{ wireguard_allowed_ips }}"
+      networkmanager:
+        name: "wg0"
+        passthrough:
+          connection.autoconnect: "false"
+          ipv6.method: "disabled"
