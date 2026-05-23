@@ -11,5 +11,5 @@ wireguard_private_key: !vault |
 wireguard_address: 192.168.2.2/32
 wireguard_dns: 192.168.2.1
 wireguard_peer_public_key: odUKVj6FYEzrDuis4JK0bcEcVl7gvJVcC1xHqvPtEFs=
-wireguard_endpoint: 64.85.243.235:51820
+wireguard_endpoint: vpn.gudenet.com:51820
 wireguard_allowed_ips: 0.0.0.0/0
