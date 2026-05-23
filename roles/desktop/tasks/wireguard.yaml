@@ -12,14 +12,14 @@
     paths: /etc/netplan
     patterns: "90-NM-*"
     file_type: file
-  register: nm_netplan_files
+  register: desktop_nm_netplan_files
   become: true
 
 - name: Check for wg0 in NM-generated files
   ansible.builtin.shell:
     cmd: grep -l 'wg0' {{ item.path }} 2>/dev/null || true
-  loop: "{{ nm_netplan_files.files }}"
-  register: wg_netplan_check
+  loop: "{{ desktop_nm_netplan_files.files }}"
+  register: desktop_wg_netplan_check
   changed_when: false
   become: true
 
@@ -27,7 +27,7 @@
   ansible.builtin.file:
     path: "{{ item.item.path }}"
     state: absent
-  loop: "{{ wg_netplan_check.results }}"
+  loop: "{{ desktop_wg_netplan_check.results }}"
   when: item.stdout != ""
   become: true
   notify: Apply netplan
