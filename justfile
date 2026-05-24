@@ -20,3 +20,10 @@ apply host="all" *ARGS="":
 
 diff host="all" *ARGS="":
     uv run ansible-playbook site.yaml -i {{inventory}} --limit {{host}} --check --diff {{ARGS}}
+
+hooks-install:
+    @echo "Installing pre-commit hook..."
+    @mkdir -p .git/hooks
+    @cp bin/pre-commit.sh .git/hooks/pre-commit
+    @chmod +x .git/hooks/pre-commit
+    @echo "Pre-commit hook installed."
