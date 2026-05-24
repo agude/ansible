@@ -22,9 +22,23 @@
     mode: "0644"
   become: true
 
+- name: Remove deb822 mozilla.sources file
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/mozilla.sources
+    state: absent
+  become: true
+
+- name: Clear stale Mozilla apt cache
+  ansible.builtin.shell:
+    cmd: rm -f /var/lib/apt/lists/packages.mozilla.org_apt_*
+  become: true
+  changed_when: false
+
 - name: Add Mozilla APT repository
+  # arch=amd64 skips binary-all index which returns HTTP 400 (Mozilla server bug)
+  # deb822 Architectures: field does not have the same effect
   ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main"
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main"
     filename: mozilla
     state: present
   become: true
