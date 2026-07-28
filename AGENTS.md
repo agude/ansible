@@ -7,7 +7,9 @@ This file provides guidance to AI coding agents. CLAUDE.md and Gemini.md are sym
 ```bash
 just sync              # Install Python deps via uv
 just lint              # yamllint + ansible-lint
-just check             # Syntax check playbook
+just lint              # yamllint + ansible-lint (read-only)
+just syntax-check      # Parse every play without touching a host
+just check             # Everything CI runs: lint + syntax-check
 just apply <host>      # Run playbook (host: einstein, dirac, kaon, synology, or "all")
 just diff <host>       # Dry run with diff output
 ```
