@@ -8,12 +8,19 @@ default:
 sync:
     uv sync
 
+# All read-only static checks. Ansible has no house formatter, so there is
+# deliberately no `format` recipe.
 lint:
     uv run yamllint -s .
     uv run ansible-lint
 
-check:
+# Parse every play without touching a host.
+syntax-check:
     uv run ansible-playbook site.yaml --syntax-check -i {{inventory}}
+
+# Everything CI runs. `check` is reserved for the full gate across all repos;
+# the playbook parse is `syntax-check`.
+check: lint syntax-check
 
 apply host="all" *ARGS="":
     uv run ansible-playbook site.yaml -i {{inventory}} --limit {{host}} {{ARGS}}
