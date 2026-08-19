@@ -1,0 +1,13 @@
+---
+galaxy_info:
+  author: Alexander Gude
+  role_name: codex
+  namespace: agude
+  description: Install OpenAI Codex CLI and configure bwrap AppArmor profile
+  license: MIT
+  min_ansible_version: "2.14"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - noble
+        - oracular

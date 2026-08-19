@@ -1,0 +1,18 @@
+---
+- name: Install Codex CLI  # noqa: command-instead-of-module risky-shell-pipe
+  ansible.builtin.shell:
+    cmd: set -o pipefail && curl -fsSL https://chatgpt.com/codex/install.sh | sh
+    creates: "/home/{{ user }}/.local/bin/codex"
+    executable: /bin/bash
+  become: true
+  become_user: "{{ user }}"
+
+- name: Install bwrap AppArmor profile
+  ansible.builtin.copy:
+    src: bwrap-apparmor
+    dest: /etc/apparmor.d/bwrap
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  notify: codex_reload_bwrap_apparmor
