@@ -6,6 +6,7 @@
     - livepatch
     - uv
     - claude_code
+    - codex
 
 - name: Desktop machines
   hosts: desktops
