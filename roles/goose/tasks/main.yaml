@@ -1,0 +1,27 @@
+---
+- name: Gather installed package facts
+  ansible.builtin.package_facts:
+    manager: apt
+
+- name: Install latest Goose desktop app when absent
+  when: ansible_facts.packages["goose"] is not defined
+  block:
+    - name: Get latest Goose release
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/aaif-goose/goose/releases/latest
+        return_content: true
+      register: goose_latest_release
+      check_mode: false
+
+    - name: Select Goose Debian package
+      ansible.builtin.set_fact:
+        goose_deb_url: >-
+          {{ goose_latest_release.json.assets
+             | selectattr('name', 'match', '^goose_.*_amd64\.deb$')
+             | map(attribute='browser_download_url')
+             | first }}
+
+    - name: Install Goose desktop app
+      ansible.builtin.apt:
+        deb: "{{ goose_deb_url }}"
+      become: true

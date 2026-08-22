@@ -49,6 +49,7 @@ Wiki           self-registers hooks + skills via scripts/install
 | codex | all | OpenAI Codex CLI |
 | opencode | all | OpenCode coding agent (native installer) |
 | desktop | desktops | Desktop-specific packages |
+| goose | desktops | Latest Goose desktop app on first install |
 | cleanup | desktops | Enable empty-downloads systemd service |
 | pi | pis | Docker for GitOps container management |
 

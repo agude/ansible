@@ -23,8 +23,8 @@ Ansible provisions personal Linux machines to the point where dotfiles and self-
 **Inventory groups**: desktops (einstein, dirac), pis (kaon), nas (synology)
 
 **Playbook structure** (`site.yaml`):
-- Play 1: `all:!nas` → common, livepatch, uv, claude_code
-- Play 2: `desktops` → desktop, cleanup
+- Play 1: `all:!nas` → common, livepatch, uv, claude_code, codex, opencode
+- Play 2: `desktops` → czkawka, desktop, goose, cleanup
 - Play 3: `pis` → pi
 - Play 4: `nas` → synology (with Python interpreter detection)
 
