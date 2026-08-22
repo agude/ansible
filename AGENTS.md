@@ -14,7 +14,7 @@ just apply <host>      # Run playbook (host: einstein, dirac, kaon, synology, or
 just diff <host>       # Dry run with diff output
 ```
 
-Run `ansible-galaxy collection install -r requirements.yml` before first use.
+Run `just sync` before first use (installs Python deps and Ansible collections into `./collections`).
 
 ## Architecture
 

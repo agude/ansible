@@ -19,9 +19,6 @@ jobs:
       - name: Install dependencies
         run: just sync
 
-      - name: Install Ansible collections
-        run: uv run ansible-galaxy collection install -r requirements.yml
-
       # Must match vault_password_file in ansible.cfg and the actual vault
       # password.
       - name: Create vault password file

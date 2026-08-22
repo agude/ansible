@@ -4,6 +4,7 @@ extends: default
 ignore: |
   .venv/
   .git/
+  collections/
 
 rules:
   line-length: disable

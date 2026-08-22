@@ -7,6 +7,7 @@ default:
 
 sync:
     uv sync
+    uv run ansible-galaxy collection install -r requirements.yml
 
 # All read-only static checks. Ansible has no house formatter, so there is
 # deliberately no `format` recipe.
