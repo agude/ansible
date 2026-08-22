@@ -1,10 +1,10 @@
 ---
 galaxy_info:
-  role_name: ollama
+  role_name: opencode
   namespace: agude
   author: agude
   license: MIT
-  description: Install Ollama for local LLM inference
+  description: Install OpenCode coding agent
   min_ansible_version: "2.14"
 
 dependencies: []

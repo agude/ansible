@@ -1,0 +1,8 @@
+---
+- name: Install OpenCode  # noqa: command-instead-of-module risky-shell-pipe
+  ansible.builtin.shell:
+    cmd: set -o pipefail && curl -fsSL https://opencode.ai/install | bash
+    creates: "/home/{{ user }}/.opencode/bin/opencode"
+    executable: /bin/bash
+  become: true
+  become_user: "{{ user }}"

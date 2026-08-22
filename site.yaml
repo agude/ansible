@@ -7,6 +7,7 @@
     - uv
     - claude_code
     - codex
+    - opencode
 
 - name: Desktop machines
   hosts: desktops

@@ -46,6 +46,8 @@ Wiki           self-registers hooks + skills via scripts/install
 | livepatch | all | Ubuntu Pro + kernel live patching |
 | uv | all | Python package manager (pinned version from GitHub releases) |
 | claude_code | all | Claude Code CLI (native installer, no Node.js) |
+| codex | all | OpenAI Codex CLI |
+| opencode | all | OpenCode coding agent (native installer) |
 | desktop | desktops | Desktop-specific packages |
 | cleanup | desktops | Enable empty-downloads systemd service |
 | pi | pis | Docker for GitOps container management |

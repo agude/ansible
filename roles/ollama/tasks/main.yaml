@@ -56,22 +56,3 @@
   ansible.builtin.file:
     path: /tmp/qwen3-8b-32k.Modelfile
     state: absent
-
-# OpenCode: Claude Code-like frontend for local models
-- name: Install OpenCode  # noqa: command-instead-of-module risky-shell-pipe
-  ansible.builtin.shell:
-    cmd: set -o pipefail && curl -fsSL https://opencode.ai/install | bash
-    creates: "/home/{{ user }}/.opencode/bin/opencode"
-    executable: /bin/bash
-  become: true
-  become_user: "{{ user }}"
-
-- name: Ensure OpenCode config directory exists
-  ansible.builtin.file:
-    path: "/home/{{ user }}/.config/opencode"
-    state: directory
-    mode: "0700"
-    owner: "{{ user }}"
-    group: "{{ user }}"
-  become: true
-  become_user: "{{ user }}"
