@@ -14,7 +14,6 @@
   roles:
     - czkawka
     - desktop
-    - goose
     - cleanup
 
 - name: Local LLM workstation (GPU required)
