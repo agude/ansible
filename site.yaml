@@ -5,9 +5,12 @@
     - common
     - livepatch
     - uv
-    - claude_code
-    - codex
-    - opencode
+    - role: claude_code
+      when: claude_code_enabled
+    - role: codex
+      when: codex_enabled
+    - role: opencode
+      when: opencode_enabled
 
 - name: Desktop machines
   hosts: desktops
@@ -20,6 +23,7 @@
   hosts: einstein
   roles:
     - role: ollama
+      when: ollama_enabled
       tags: [ollama]
 
 - name: Raspberry Pi base setup

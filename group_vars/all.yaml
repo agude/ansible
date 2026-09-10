@@ -9,6 +9,11 @@ coat_tree_repo: git@github.com:agude/coat-tree.git
 
 uv_version: "0.7.12"
 
+claude_code_enabled: false
+codex_enabled: true
+opencode_enabled: false
+ollama_enabled: true
+
 ubuntu_pro_token: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           38636332396434323034636432313562633038633366316565636562656531386531366365383061

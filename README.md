@@ -38,6 +38,20 @@ Knowledge      self-registers hooks + skills via scripts/install
 Wiki           self-registers hooks + skills via scripts/install
 ```
 
+## LLM tools
+
+LLM tools are controlled by the enable flags in `group_vars/all.yaml`:
+
+```yaml
+claude_code_enabled: false
+codex_enabled: true
+opencode_enabled: false
+ollama_enabled: true
+```
+
+Override these variables in a group or host vars file to select a different
+set of tools for specific machines. Ollama remains limited to `einstein`.
+
 ## Roles
 
 | Role | Applied to | Purpose |
@@ -45,9 +59,10 @@ Wiki           self-registers hooks + skills via scripts/install
 | common | all | SSH, packages, apt config, dotfiles + Knowledge + Wiki |
 | livepatch | all | Ubuntu Pro + kernel live patching |
 | uv | all | Python package manager (pinned version from GitHub releases) |
-| claude_code | all | Claude Code CLI (native installer, no Node.js) |
-| codex | all | OpenAI Codex CLI |
-| opencode | all | OpenCode coding agent (native installer) |
+| claude_code | all, when enabled | Claude Code CLI (native installer, no Node.js) |
+| codex | all, when enabled | OpenAI Codex CLI |
+| opencode | all, when enabled | OpenCode coding agent (native installer) |
+| ollama | einstein, when enabled | Local LLM inference service and models |
 | desktop | desktops | Desktop-specific packages |
 | cleanup | desktops | Enable empty-downloads systemd service |
 | pi | pis | Docker for GitOps container management |
