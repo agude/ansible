@@ -1,6 +1,6 @@
 # AGENTS.md
 
-This file provides guidance to AI coding agents. CLAUDE.md and Gemini.md are symlinks to this file.
+This file provides guidance to AI coding agents. Gemini.md is a symlink to this file.
 
 ## Commands
 
