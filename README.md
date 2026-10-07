@@ -43,7 +43,7 @@ Wiki           self-registers hooks + skills via scripts/install
 LLM tools are controlled by the enable flags in `group_vars/all.yaml`:
 
 ```yaml
-claude_code_enabled: false
+claude_code_enabled: true
 codex_enabled: true
 opencode_enabled: false
 ollama_enabled: true
