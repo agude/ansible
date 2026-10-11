@@ -7,6 +7,10 @@ knowledge_repo: git@github.com:agude/knowledge-base-core.git
 wiki_repo: git@github.com:agude/wiki-core.git
 coat_tree_repo: git@github.com:agude/coat-tree.git
 
+# Advertised by kaon's Tailscale subnet router. The NAS's manually configured
+# Tailscale container must advertise the same route, or failover breaks.
+home_lan_subnet: 192.168.1.0/24
+
 uv_version: "0.7.12"
 
 claude_code_enabled: true

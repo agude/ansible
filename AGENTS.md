@@ -26,7 +26,7 @@ Ansible provisions personal Linux machines to the point where dotfiles and self-
 - Play 1: `all:!nas` → common, livepatch, uv, configurable coding agents
 - Play 2: `desktops` → desktop, cleanup
 - Play 3: `einstein` → ollama (when enabled)
-- Play 4: `pis` → pi
+- Play 4: `pis` → pi, tailscale
 - Play 5: `nas` → synology (with Python interpreter detection)
 
 **Variable precedence**: `group_vars/all.yaml` → `group_vars/<group>.yaml` → inventory host vars
@@ -88,6 +88,9 @@ scripts, dotfiles install, pubkey authorization — and prints DSM Task Schedule
 instructions on change rather than trying to create those entries. Task
 Scheduler entries are DB-backed and stay manual by design.
 
+Tailscale on the NAS is deliberately manual (a Container Manager project), not
+managed by this role.
+
 **Target Python must be 3.9+.** ansible-core 2.17+ hard-requires it, and DSM
 7.3 ships only 3.8. No `ansible_python_interpreter` override works around this
 — the requirement is enforced inside every module's bootstrap, not by
@@ -101,6 +104,16 @@ working across future Python package bumps.
 Other DSM constraints: no `script` binary, so the dotfiles profile must be
 server-style with no TTY wrapper or interactive prompts. `become_user` works for
 user-owned paths under `/volume1/homes/`, but pubkey authorization needs sudo.
+
+### kaon (Pi)
+
+The `tailscale` role installs Tailscale natively (not in Docker, and not in
+pi-cron-automation, whose hourly hard reset to `origin/main` would put remote
+access at the mercy of every push). Login is manual: on a host that is not
+logged in, the role prints the `tailscale up` and admin console steps and skips
+`tailscale set`. Re-run the playbook after logging in to apply the routes.
+`home_lan_subnet` in `group_vars/all.yaml` must match the route the NAS's
+manually configured Tailscale container advertises, or subnet failover breaks.
 
 ### desktops (einstein, dirac)
 

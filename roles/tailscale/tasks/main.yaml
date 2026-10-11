@@ -1,0 +1,104 @@
+---
+# Install Tailscale from its apt repo and make this host a subnet router and
+# exit node for the home LAN. The one-time login stays manual: auth keys
+# expire, so one stored in the vault would only go stale.
+
+- name: Create keyrings directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Download Tailscale GPG key
+  ansible.builtin.get_url:
+    url: "https://pkgs.tailscale.com/stable/{{ ansible_facts['distribution'] | lower }}/{{ ansible_facts['distribution_release'] }}.noarmor.gpg"
+    dest: /etc/apt/keyrings/tailscale.gpg
+    mode: "0644"
+  become: true
+
+- name: Add Tailscale repository
+  ansible.builtin.apt_repository:
+    repo: >-
+      deb [signed-by=/etc/apt/keyrings/tailscale.gpg]
+      https://pkgs.tailscale.com/stable/{{ ansible_facts['distribution'] | lower }}
+      {{ ansible_facts['distribution_release'] }} main
+    filename: tailscale
+    state: present
+  become: true
+
+- name: Install Tailscale
+  ansible.builtin.apt:
+    name: tailscale
+    state: present
+    update_cache: true
+  become: true
+
+- name: Enable IP forwarding for subnet routing
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: "1"
+    sysctl_file: /etc/sysctl.d/99-tailscale.conf
+    state: present
+    reload: true
+  loop:
+    - net.ipv4.ip_forward
+    - net.ipv6.conf.all.forwarding
+  become: true
+
+- name: Ensure tailscaled is running
+  ansible.builtin.systemd:
+    name: tailscaled
+    state: started
+    enabled: true
+  become: true
+
+# `status --json` exits 0 in every backend state; a non-zero exit means
+# tailscaled is unreachable (or not yet installed, in check mode).
+- name: Check Tailscale backend state
+  ansible.builtin.command: tailscale status --json
+  register: tailscale_status
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  become: true
+
+- name: Record Tailscale backend state
+  ansible.builtin.set_fact:
+    tailscale_backend_state: >-
+      {{ (tailscale_status.stdout | from_json).BackendState
+         if tailscale_status.rc == 0 else 'Unreachable' }}
+
+- name: Print login instructions
+  ansible.builtin.debug:
+    msg: |
+      Tailscale on {{ inventory_hostname }} is not running (state: {{ tailscale_backend_state }}).
+      Log in once by hand:
+        ssh -t {{ inventory_hostname }} sudo tailscale up
+      Open the printed URL, then re-run: just apply {{ inventory_hostname }}
+      After that run, in the admin console (https://login.tailscale.com/admin/machines):
+        - Approve the subnet route and exit node
+        - Disable key expiry
+  when: tailscale_backend_state != 'Running'
+
+# `tailscale set` prints nothing either way, so compare preferences around it
+# to report a change only when one happened.
+# --accept-dns=false: this host already resolves through the UDM.
+# --auto-update: unattended-upgrades only allows distro origins (see the
+# common role), so it never upgrades packages from the Tailscale repo.
+- name: Advertise routes and exit node
+  ansible.builtin.shell:
+    cmd: |
+      set -eu
+      before=$(tailscale debug prefs)
+      tailscale set \
+        --advertise-routes={{ home_lan_subnet }} \
+        --advertise-exit-node \
+        --accept-dns=false \
+        --auto-update
+      after=$(tailscale debug prefs)
+      if [ "$before" != "$after" ]; then echo changed; fi
+  register: tailscale_set
+  changed_when: tailscale_set.stdout == 'changed'
+  when: tailscale_backend_state == 'Running'
+  become: true

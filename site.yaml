@@ -30,6 +30,7 @@
   hosts: pis
   roles:
     - pi
+    - tailscale
 
 - name: Synology NAS setup
   hosts: nas

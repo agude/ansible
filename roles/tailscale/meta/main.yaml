@@ -1,0 +1,10 @@
+---
+galaxy_info:
+  role_name: tailscale
+  namespace: agude
+  author: agude
+  license: MIT
+  description: Install Tailscale as a subnet router and exit node for the home LAN
+  min_ansible_version: "2.14"
+
+dependencies: []
