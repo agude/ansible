@@ -1,0 +1,4 @@
+---
+# true: advertise home_lan_subnet and an exit node. false: a client that
+# accepts those routes.
+tailscale_subnet_router: false

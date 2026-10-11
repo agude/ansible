@@ -24,7 +24,7 @@ Ansible provisions personal Linux machines to the point where dotfiles and self-
 
 **Playbook structure** (`site.yaml`):
 - Play 1: `all:!nas` → common, livepatch, uv, configurable coding agents
-- Play 2: `desktops` → desktop, cleanup
+- Play 2: `desktops` → czkawka, desktop, cleanup, tailscale client (when enabled)
 - Play 3: `einstein` → ollama (when enabled)
 - Play 4: `pis` → pi, tailscale
 - Play 5: `nas` → synology (with Python interpreter detection)
@@ -121,6 +121,15 @@ NVIDIA support is auto-detected with `lspci | grep -qi nvidia`, which
 conditionally includes `nvidia.yaml` and runs `ubuntu-drivers autoinstall`. No
 inventory variables are needed. Note that an RTX 5060 (Blackwell) requires
 driver 595 or newer; driver 580 predates Blackwell and will not work.
+
+Tailscale runs as a client on hosts with `tailscale_enabled: true` (dirac, the
+laptop; einstein stays on the home LAN and is reached through kaon's subnet
+route). The role accepts kaon's routes and installs
+`tailscale-lan-direct.service`, an `ip rule` that keeps `home_lan_subnet`
+traffic on the local network when dirac is at home. Login is manual, as on
+kaon: `sudo tailscale up` on dirac, then re-run the playbook. Leave key expiry
+on for the laptop. Do not run Tailscale and the WireGuard client at the same
+time: WireGuard's `AllowedIPs` is `0.0.0.0/0`.
 
 NAS home shares are mounted over CIFS with `ansible.posix.mount`. **Check that
 the target path is already a mount point before running:** if

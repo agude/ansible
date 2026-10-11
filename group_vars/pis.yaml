@@ -1,6 +1,8 @@
 ---
 dotfiles_profile: server
 
+tailscale_subnet_router: true
+
 ssh_outbound_targets:
   - github
 
