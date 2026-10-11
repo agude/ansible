@@ -14,6 +14,15 @@
   become: true
   become_user: "{{ user }}"
 
+# Ubuntu restricts unprivileged user namespaces through AppArmor, and the
+# profile lets bwrap (Codex's sandbox) create them. Kernels without that
+# restriction do not need it, and on kaon (AppArmor disabled in the Pi
+# kernel) apparmor_parser fails to load it.
+- name: Check for AppArmor user namespace restriction
+  ansible.builtin.stat:
+    path: /proc/sys/kernel/apparmor_restrict_unprivileged_userns
+  register: codex_userns_restriction
+
 - name: Install bwrap AppArmor profile
   ansible.builtin.copy:
     src: bwrap-apparmor
@@ -23,3 +32,11 @@
     mode: "0644"
   become: true
   notify: codex_reload_bwrap_apparmor
+  when: codex_userns_restriction.stat.exists
+
+- name: Remove bwrap AppArmor profile where it is not needed
+  ansible.builtin.file:
+    path: /etc/apparmor.d/bwrap
+    state: absent
+  become: true
+  when: not codex_userns_restriction.stat.exists
