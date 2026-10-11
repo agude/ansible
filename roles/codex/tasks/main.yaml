@@ -4,6 +4,13 @@
     cmd: set -o pipefail && curl -fsSL https://chatgpt.com/codex/install.sh | sh
     creates: "/home/{{ user }}/.local/bin/codex"
     executable: /bin/bash
+  # The installer prompts on /dev/tty ("Start Codex now?"), and Ansible's
+  # SSH session has a tty, so without CODEX_NON_INTERACTIVE the task hangs
+  # forever. It also appends a PATH block to ~/.zshrc (a symlink into the
+  # dotfiles repo) unless ~/.local/bin is already on PATH.
+  environment:
+    CODEX_NON_INTERACTIVE: "1"
+    PATH: "/home/{{ user }}/.local/bin:{{ ansible_facts.env.PATH }}"
   become: true
   become_user: "{{ user }}"
 
