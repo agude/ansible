@@ -1,6 +1,13 @@
 ---
 dotfiles_profile: server
 
+# kaon's GitHub key is passphrase-protected, so unattended runs cannot use it.
+# These repos are public; clone them read-only over HTTPS instead.
+dotfiles_repo: https://github.com/agude/dotfiles.git
+knowledge_repo: https://github.com/agude/knowledge-base-core.git
+wiki_repo: https://github.com/agude/wiki-core.git
+coat_tree_repo: https://github.com/agude/coat-tree.git
+
 ssh_outbound_targets:
   - github
 

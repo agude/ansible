@@ -73,6 +73,9 @@
     dest: "/home/{{ user }}/Projects/pi-cron-automation"
     version: main
     accept_hostkey: true
+    # The module sets GIT_SSH_COMMAND, which overrides the repo's
+    # core.sshCommand, so the read-only deploy key must be passed here.
+    key_file: "/home/{{ user }}/.ssh/id_ed25519_{{ inventory_hostname }}_deploy_pi_cron"
   become: true
   become_user: "{{ user }}"
 
