@@ -66,6 +66,7 @@ set of tools for specific machines. Ollama remains limited to `einstein`.
 | desktop | desktops | Desktop-specific packages |
 | cleanup | desktops | Enable empty-downloads systemd service |
 | pi | pis | Docker for GitOps container management |
+| tailscale | pis | Tailscale subnet router and exit node for the home LAN |
 
 ## Synology
 
