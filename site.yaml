@@ -18,6 +18,8 @@
     - czkawka
     - desktop
     - cleanup
+    - role: tailscale
+      when: tailscale_enabled
 
 - name: Local LLM workstation (GPU required)
   hosts: einstein

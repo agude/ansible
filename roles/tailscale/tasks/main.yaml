@@ -1,7 +1,9 @@
 ---
-# Install Tailscale from its apt repo and make this host a subnet router and
-# exit node for the home LAN. The one-time login stays manual: auth keys
-# expire, so one stored in the vault would only go stale.
+# Install Tailscale from its apt repo. With tailscale_subnet_router, the host
+# is a subnet router and exit node for the home LAN; otherwise it is a client
+# that reaches the home LAN through the router when away. The one-time login
+# stays manual: auth keys expire, so one stored in the vault would only go
+# stale.
 
 - name: Create keyrings directory
   ansible.builtin.file:
@@ -45,6 +47,32 @@
     - net.ipv4.ip_forward
     - net.ipv6.conf.all.forwarding
   become: true
+  when: tailscale_subnet_router
+
+# With --accept-routes, Tailscale's policy rules (priorities 5210-5270) send
+# the home LAN through the subnet router even at home. This rule runs first
+# and uses the main table, where suppress_prefixlength 0 ignores the default
+# route: at home the connected LAN route wins, and away from home the lookup
+# falls through to Tailscale.
+- name: Install home LAN routing rule service
+  ansible.builtin.template:
+    src: tailscale-lan-direct.service.j2
+    dest: /etc/systemd/system/tailscale-lan-direct.service
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  notify: tailscale_restart_lan_direct
+  when: not tailscale_subnet_router
+
+- name: Enable home LAN routing rule service
+  ansible.builtin.systemd:
+    name: tailscale-lan-direct.service
+    enabled: true
+    state: started
+    daemon_reload: true
+  become: true
+  when: not tailscale_subnet_router
 
 - name: Ensure tailscaled is running
   ansible.builtin.systemd:
@@ -73,12 +101,18 @@
   ansible.builtin.debug:
     msg: |
       Tailscale on {{ inventory_hostname }} is not running (state: {{ tailscale_backend_state }}).
+      {% if tailscale_subnet_router %}
       Log in once by hand:
         ssh -t {{ inventory_hostname }} sudo tailscale up
       Open the printed URL, then re-run: just apply {{ inventory_hostname }}
       After that run, in the admin console (https://login.tailscale.com/admin/machines):
         - Approve the subnet route and exit node
         - Disable key expiry
+      {% else %}
+      Log in once by hand, on {{ inventory_hostname }}:
+        sudo tailscale up
+      Open the printed URL, then re-run: just apply {{ inventory_hostname }}
+      {% endif %}
   when: tailscale_backend_state != 'Running'
 
 # `tailscale set` prints nothing either way, so compare preferences around it
@@ -100,5 +134,30 @@
       if [ "$before" != "$after" ]; then echo changed; fi
   register: tailscale_set
   changed_when: tailscale_set.stdout == 'changed'
-  when: tailscale_backend_state == 'Running'
+  when:
+    - tailscale_subnet_router
+    - tailscale_backend_state == 'Running'
+  become: true
+
+# --accept-dns: away from home, *.localdomain resolves only through the
+# tailnet's split DNS entry.
+# --operator: lets the user run `tailscale up`, `down`, and
+# `set --exit-node` without sudo, to switch between Tailscale and WireGuard.
+- name: Accept routes from the subnet router
+  ansible.builtin.shell:
+    cmd: |
+      set -eu
+      before=$(tailscale debug prefs)
+      tailscale set \
+        --accept-routes \
+        --accept-dns \
+        --operator={{ user }} \
+        --auto-update
+      after=$(tailscale debug prefs)
+      if [ "$before" != "$after" ]; then echo changed; fi
+  register: tailscale_set_client
+  changed_when: tailscale_set_client.stdout == 'changed'
+  when:
+    - not tailscale_subnet_router
+    - tailscale_backend_state == 'Running'
   become: true

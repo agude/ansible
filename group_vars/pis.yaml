@@ -1,6 +1,8 @@
 ---
 dotfiles_profile: server
 
+tailscale_subnet_router: true
+
 # kaon's GitHub key is passphrase-protected, so unattended runs cannot use it.
 # These repos are public; clone them read-only over HTTPS instead.
 dotfiles_repo: https://github.com/agude/dotfiles.git

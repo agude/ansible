@@ -25,6 +25,10 @@ ssh_outbound_targets:
 
 czkawka_version: "11.0.1"
 
+# Tailscale client. Enable per host: einstein stays on the home LAN, so it is
+# already reachable through kaon's subnet route.
+tailscale_enabled: false
+
 desktop_packages:
   - bats
   - libimage-exiftool-perl
