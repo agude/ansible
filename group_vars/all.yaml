@@ -11,7 +11,7 @@ coat_tree_repo: git@github.com:agude/coat-tree.git
 # Tailscale container must advertise the same route, or failover breaks.
 home_lan_subnet: 192.168.1.0/24
 
-uv_version: "0.7.12"
+uv_version: "0.13.0"
 
 claude_code_enabled: true
 codex_enabled: true

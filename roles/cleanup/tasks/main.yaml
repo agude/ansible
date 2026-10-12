@@ -1,6 +1,8 @@
 ---
 # Enable the empty-downloads systemd user service.
 # The service file is deployed by dotfiles — this just activates it.
+# Enable only, never start: the service is a oneshot that is inactive once it
+# has run, so `state: started` would empty ~/Downloads on every playbook run.
 
 - name: Reload systemd user daemon
   ansible.builtin.systemd:
@@ -13,7 +15,6 @@
   ansible.builtin.systemd:
     name: empty-downloads.service
     enabled: true
-    state: started
     scope: user
   become: true
   become_user: "{{ user }}"

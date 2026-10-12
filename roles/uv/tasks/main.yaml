@@ -2,8 +2,11 @@
 # Install uv from GitHub releases (no curl-pipe-sh).
 # Pin version in group_vars to control updates.
 
+# Check the copy this role installs, not whichever uv is first on PATH: uv's
+# own installer puts a self-updating copy in ~/.local/bin, which never matches
+# the pin and would trigger a reinstall on every run.
 - name: Check installed uv version
-  ansible.builtin.command: uv --version
+  ansible.builtin.command: /usr/local/bin/uv --version
   register: uv_installed
   changed_when: false
   failed_when: false
