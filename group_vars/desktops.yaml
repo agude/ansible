@@ -1,6 +1,10 @@
 ---
 dotfiles_profile: default
 
+# Interpreter discovery takes the first python3.X on PATH, which can be a uv
+# or other user-installed Python. Modules such as apt need the system one.
+ansible_python_interpreter: /usr/bin/python3
+
 nas_ip: 192.168.1.10
 nas_home_mounts:
   - src: "/homes/{{ user }}"

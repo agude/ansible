@@ -1,6 +1,10 @@
 ---
 dotfiles_profile: server
 
+# Interpreter discovery takes the first python3.X on PATH, which can be a uv
+# or other user-installed Python. Modules such as apt need the system one.
+ansible_python_interpreter: /usr/bin/python3
+
 tailscale_subnet_router: true
 
 # kaon's GitHub key is passphrase-protected, so unattended runs cannot use it.
