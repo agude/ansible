@@ -131,7 +131,21 @@ kaon: `sudo tailscale up` on dirac, then re-run the playbook. Leave key expiry
 on for the laptop. Do not run Tailscale and the WireGuard client at the same
 time: WireGuard's `AllowedIPs` is `0.0.0.0/0`.
 
-NAS home shares are mounted over CIFS with `ansible.posix.mount`. **Check that
-the target path is already a mount point before running:** if
+All five NAS shares use the same CIFS automount policy on both desktops.
+`desktop_nas_mounts` in `group_vars/desktops.yaml` is the shared list, and
+`desktop_nas_mount_options` in the desktop role defaults supplies `soft`,
+`nofail`, systemd automounting, a 10-second mount-command timeout, and a
+60-second idle timeout. VPN and offline use must not require host-specific
+mount logic. The mount timeout does not limit ongoing file operations.
+
+**Check the target paths before applying:** if
 `/home/agude/Documents` holds local files and the NAS mounts over it, those
 files are shadowed — still on disk, but inaccessible until unmount.
+
+NAS tasks in `roles/desktop/tasks/nas.yaml` use `ansible.posix.mount` with
+`state: present` so provisioning does not require NAS connectivity. They
+remove the old NetworkManager retry hook and start automount units only for
+shares that are not already mounted. Active mounts migrate on the next
+normal reboot; do not force an unmount. This changes Einstein's previous
+NFS4 `backups` and `media` mounts to CIFS. Apply with
+`just apply <host> -c local -K --tags nas` on the corresponding host.
