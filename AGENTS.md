@@ -151,6 +151,13 @@ All five NAS shares use the same CIFS automount policy on both desktops.
 60-second idle timeout. VPN and offline use must not require host-specific
 mount logic. The mount timeout does not limit ongoing file operations.
 
+`seal` requires SMB3 encryption on every NAS mount. A laptop on a foreign
+network that also uses `home_lan_subnet` can reach a different host at
+`nas_ip`. That host cannot derive the encryption keys without the password,
+so the mount fails rather than exchanging file data with it. Keep `seal`
+client-side: a DSM setting that requires encryption does not stop a fake
+server.
+
 **Check the target paths before applying:** if
 `/home/agude/Documents` holds local files and the NAS mounts over it, those
 files are shadowed — still on disk, but inaccessible until unmount.

@@ -105,6 +105,12 @@ the share; busy shares stay mounted. CIFS `soft` returns errors after network
 retries rather than retrying indefinitely. The 10-second limit applies to
 the mount command, not ongoing file operations.
 
+`seal` requires SMB3 encryption. It protects NAS traffic on the home LAN and
+makes the mount fail against a host that answers at the NAS IP on another
+network, because that host cannot derive the encryption keys without the
+password. To confirm encryption on a mounted share, run
+`grep -A3 Encrypt /proc/fs/cifs/DebugData`.
+
 The same NAS IP is used on the home LAN and through a VPN with a route to
 the home LAN. If the NAS cannot be reached, access fails; accessing the path
 again retries once connectivity is restored. No network dispatcher hook is
