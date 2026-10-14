@@ -146,6 +146,9 @@ NAS tasks in `roles/desktop/tasks/nas.yaml` use `ansible.posix.mount` with
 `state: present` so provisioning does not require NAS connectivity. They
 remove the old NetworkManager retry hook and start automount units only for
 shares that are not already mounted. Active mounts migrate on the next
-normal reboot; do not force an unmount. This changes Einstein's previous
+normal reboot; do not force an unmount. Local disk mounts, such as
+Einstein's Windows partitions, are not managed by Ansible; the role fails
+rather than replace an fstab entry whose type is not `cifs` or `nfs`. This
+changes Einstein's previous
 NFS4 `backups` and `media` mounts to CIFS. Apply with
 `just apply <host> -c local -K --tags nas` on the corresponding host.

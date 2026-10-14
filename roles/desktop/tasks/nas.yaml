@@ -17,6 +17,37 @@
   become: true
   no_log: true
 
+# ansible.posix.mount replaces any fstab entry with the same path. Never let a
+# NAS mount overwrite a local disk entry, such as Einstein's Windows partitions.
+- name: Read existing fstab entries for NAS mount paths
+  ansible.builtin.command:
+    argv:
+      - findmnt
+      - --fstab
+      - --noheadings
+      - --output
+      - FSTYPE
+      - --mountpoint
+      - "{{ item.path }}"
+  loop: "{{ desktop_nas_mounts }}"
+  loop_control:
+    label: "{{ item.path }}"
+  register: desktop_nas_fstab_entries
+  changed_when: false
+  failed_when: desktop_nas_fstab_entries.rc not in [0, 1]
+  check_mode: false
+
+- name: Refuse to replace local fstab entries
+  ansible.builtin.assert:
+    that: item.stdout_lines | difference(['cifs', 'nfs', 'nfs4']) | length == 0
+    fail_msg: >-
+      {{ item.item.path }} has a local fstab entry ({{ item.stdout }}).
+      Remove it from desktop_nas_mounts or move the local mount.
+    quiet: true
+  loop: "{{ desktop_nas_fstab_entries.results }}"
+  loop_control:
+    label: "{{ item.item.path }}"
+
 - name: Configure NAS automounts
   ansible.posix.mount:
     src: "{{ item.src }}"
