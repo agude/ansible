@@ -49,29 +49,8 @@
   become: true
   when: tailscale_subnet_router
 
-# With --accept-routes, Tailscale's policy rules (priorities 5210-5270) send
-# the home LAN through the subnet router even at home. This rule runs first
-# and uses the main table, where suppress_prefixlength 0 ignores the default
-# route: at home the connected LAN route wins, and away from home the lookup
-# falls through to Tailscale.
-- name: Install home LAN routing rule service
-  ansible.builtin.template:
-    src: tailscale-lan-direct.service.j2
-    dest: /etc/systemd/system/tailscale-lan-direct.service
-    owner: root
-    group: root
-    mode: "0644"
-  become: true
-  notify: tailscale_restart_lan_direct
-  when: not tailscale_subnet_router
-
-- name: Enable home LAN routing rule service
-  ansible.builtin.systemd:
-    name: tailscale-lan-direct.service
-    enabled: true
-    state: started
-    daemon_reload: true
-  become: true
+- name: Configure direct routing on the home LAN
+  ansible.builtin.import_tasks: lan-direct.yaml
   when: not tailscale_subnet_router
 
 - name: Ensure tailscaled is running

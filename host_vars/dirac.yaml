@@ -15,3 +15,8 @@ wireguard_endpoint: vpn.gudenet.com:51820
 wireguard_allowed_ips: 0.0.0.0/0
 
 tailscale_enabled: true
+
+# The same home router serves Ethernet and Wi-Fi. Its MAC distinguishes home
+# from other networks using 192.168.1.0/24; update this if the router changes.
+tailscale_home_gateway: 192.168.1.1
+tailscale_home_gateway_mac: "70:a7:41:99:46:36"

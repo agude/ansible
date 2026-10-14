@@ -68,6 +68,23 @@ set of tools for specific machines. Ollama remains limited to `einstein`.
 | pi | pis | Docker for GitOps container management |
 | tailscale | pis; desktops, when enabled | Tailscale subnet router and exit node (pis) or client (desktops) |
 
+## Tailscale client routing
+
+Dirac reaches the home LAN directly over Ethernet or Wi-Fi when an ARP probe
+confirms the configured home gateway address and MAC address. On other
+networks, including networks using the same `192.168.1.0/24` subnet, it uses
+Tailscale. NetworkManager events update the routing state after connection
+changes; a systemd service also checks it at boot.
+
+The gateway identity is set by `tailscale_home_gateway` and
+`tailscale_home_gateway_mac` in `host_vars/dirac.yaml`. Update these when the
+home router changes. Clients without a configured identity always use
+Tailscale. The helper reserves IPv4 rule priority 2500 and routing table 2500
+and removes obsolete state without needing the old subnet configuration.
+
+Run `just check` for static checks and routing regression tests. The tests
+simulate network changes without modifying the host's routing table.
+
 ## NAS client mounts
 
 Einstein and Dirac use the same five CIFS shares and mount policy, defined

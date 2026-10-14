@@ -6,10 +6,10 @@ This file provides guidance to AI coding agents. Gemini.md is a symlink to this 
 
 ```bash
 just sync              # Install Python deps via uv
-just lint              # yamllint + ansible-lint
-just lint              # yamllint + ansible-lint (read-only)
+just lint              # yamllint + ansible-lint + Ruff (read-only)
 just syntax-check      # Parse every play without touching a host
-just check             # Everything CI runs: lint + syntax-check
+just test              # Routing helper regression tests
+just check             # Everything CI runs: lint + syntax-check + test
 just apply <host>      # Run playbook (host: einstein, dirac, kaon, synology, or "all")
 just diff <host>       # Dry run with diff output
 ```
@@ -125,11 +125,24 @@ driver 595 or newer; driver 580 predates Blackwell and will not work.
 Tailscale runs as a client on hosts with `tailscale_enabled: true` (dirac, the
 laptop; einstein stays on the home LAN and is reached through kaon's subnet
 route). The role accepts kaon's routes and installs
-`tailscale-lan-direct.service`, an `ip rule` that keeps `home_lan_subnet`
-traffic on the local network when dirac is at home. Login is manual, as on
-kaon: `sudo tailscale up` on dirac, then re-run the playbook. Leave key expiry
-on for the laptop. Do not run Tailscale and the WireGuard client at the same
-time: WireGuard's `AllowedIPs` is `0.0.0.0/0`.
+`tailscale-lan-direct.service` and a NetworkManager dispatcher hook. They
+keep `home_lan_subnet` traffic local only after an ARP probe confirms the
+home gateway's MAC address on Ethernet or Wi-Fi. Configure
+`tailscale_home_gateway` and `tailscale_home_gateway_mac` in host vars; Dirac's
+gateway is `192.168.1.1` / `70:a7:41:99:46:36`. Update the identity when the
+router changes. Without a matching router, the client uses Tailscale even
+on another network with the same subnet.
+
+The routing helper exclusively owns IPv4 rule priority **2500** and routing
+table **2500**. It clears obsolete rules by priority, including the original
+rule that looked up the main table, so subnet changes do not depend on the
+previous unit's `ExecStop` arguments. The helper uses the target's system
+Python and standard library; its tests and lint run in the controller's uv
+environment.
+
+Login is manual, as on kaon: `sudo tailscale up` on dirac, then re-run the
+playbook. Leave key expiry on for the laptop. Do not run Tailscale and the
+WireGuard client at the same time: WireGuard's `AllowedIPs` is `0.0.0.0/0`.
 
 All five NAS shares use the same CIFS automount policy on both desktops.
 `desktop_nas_mounts` in `group_vars/desktops.yaml` is the shared list, and
