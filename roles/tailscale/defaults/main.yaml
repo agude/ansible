@@ -2,7 +2,3 @@
 # true: advertise home_lan_subnet and an exit node. false: a client that
 # accepts those routes.
 tailscale_subnet_router: false
-
-# Without a configured identity, clients use Tailscale on every network.
-tailscale_home_gateway: ""
-tailscale_home_gateway_mac: ""

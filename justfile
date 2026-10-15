@@ -14,9 +14,6 @@ sync:
 lint:
     uv run yamllint -s .
     uv run ansible-lint
-    uv run ruff check roles/tailscale/files tests
-    uv run ruff format --check roles/tailscale/files tests
-    sh -n roles/tailscale/files/90-tailscale-lan-direct
 
 # Parse every play without touching a host.
 syntax-check:
@@ -24,10 +21,7 @@ syntax-check:
 
 # Everything CI runs. `check` is reserved for the full gate across all repos;
 # the playbook parse is `syntax-check`.
-check: lint syntax-check test
-
-test:
-    uv run pytest
+check: lint syntax-check
 
 apply host="all" *ARGS="":
     uv run ansible-playbook site.yaml -i {{inventory}} --limit {{host}} {{ARGS}}

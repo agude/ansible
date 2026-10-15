@@ -1,8 +1,0 @@
-#!/bin/sh
-# NetworkManager events can be queued after the interface has changed again.
-# Recheck live routes rather than using the event's connection state.
-case "$2" in
-    up|down|vpn-up|vpn-down|dhcp4-change|reapply|connectivity-change)
-        exec /usr/local/sbin/tailscale-lan-direct
-        ;;
-esac

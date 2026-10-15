@@ -6,10 +6,9 @@ This file provides guidance to AI coding agents. Gemini.md is a symlink to this 
 
 ```bash
 just sync              # Install Python deps via uv
-just lint              # yamllint + ansible-lint + Ruff (read-only)
+just lint              # yamllint + ansible-lint (read-only)
 just syntax-check      # Parse every play without touching a host
-just test              # Routing helper regression tests
-just check             # Everything CI runs: lint + syntax-check + test
+just check             # Everything CI runs: lint + syntax-check
 just apply <host>      # Run playbook (host: einstein, dirac, kaon, synology, or "all")
 just diff <host>       # Dry run with diff output
 ```
@@ -124,21 +123,14 @@ driver 595 or newer; driver 580 predates Blackwell and will not work.
 
 Tailscale runs as a client on hosts with `tailscale_enabled: true` (dirac, the
 laptop; einstein stays on the home LAN and is reached through kaon's subnet
-route). The role accepts kaon's routes and installs
-`tailscale-lan-direct.service` and a NetworkManager dispatcher hook. They
-keep `home_lan_subnet` traffic local only after an ARP probe confirms the
-home gateway's MAC address on Ethernet or Wi-Fi. Configure
-`tailscale_home_gateway` and `tailscale_home_gateway_mac` in host vars; Dirac's
-gateway is `192.168.1.1` / `70:a7:41:99:46:36`. Update the identity when the
-router changes. Without a matching router, the client uses Tailscale even
-on another network with the same subnet.
-
-The routing helper exclusively owns IPv4 rule priority **2500** and routing
-table **2500**. It clears obsolete rules by priority, including the original
-rule that looked up the main table, so subnet changes do not depend on the
-previous unit's `ExecStop` arguments. The helper uses the target's system
-Python and standard library; its tests and lint run in the controller's uv
-environment.
+route). The role accepts kaon's routes. On Linux those routes take
+precedence over the local LAN, so at home `home_lan_subnet` traffic goes
+through kaon while Tailscale is up. Run `tailscale down` at home and
+`tailscale up` away; the operator setting allows both without sudo. Do not
+add automatic home-network detection: an earlier gateway-MAC helper was
+removed in favor of this manual toggle. The role removes that helper's
+service, files, and dispatcher hook from clients; stopping the service
+deletes its IPv4 rule and routing table, both numbered 2500.
 
 Login is manual, as on kaon: `sudo tailscale up` on dirac, then re-run the
 playbook. Leave key expiry on for the laptop. Do not run Tailscale and the

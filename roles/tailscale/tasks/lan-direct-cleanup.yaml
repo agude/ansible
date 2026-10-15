@@ -1,0 +1,33 @@
+---
+# Clients no longer bypass Tailscale on the home LAN; run `tailscale down` at
+# home instead. Remove the dispatcher hook first so no network event re-adds
+# the rule, then stop the service: its ExecStop deletes rule and table 2500.
+- name: Remove home LAN network change hook
+  ansible.builtin.file:
+    path: /etc/NetworkManager/dispatcher.d/90-tailscale-lan-direct
+    state: absent
+  become: true
+
+- name: Check for the home LAN routing rule service
+  ansible.builtin.stat:
+    path: /etc/systemd/system/tailscale-lan-direct.service
+  register: tailscale_lan_direct_unit
+
+- name: Stop and disable home LAN routing rule service
+  ansible.builtin.systemd_service:
+    name: tailscale-lan-direct.service
+    state: stopped
+    enabled: false
+  when: tailscale_lan_direct_unit.stat.exists
+  become: true
+
+- name: Remove home LAN routing files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/systemd/system/tailscale-lan-direct.service
+    - /etc/tailscale-lan-direct.json
+    - /usr/local/sbin/tailscale-lan-direct
+  become: true
+  notify: Reload tailscale systemd

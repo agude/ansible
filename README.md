@@ -70,20 +70,17 @@ set of tools for specific machines. Ollama remains limited to `einstein`.
 
 ## Tailscale client routing
 
-Dirac reaches the home LAN directly over Ethernet or Wi-Fi when an ARP probe
-confirms the configured home gateway address and MAC address. On other
-networks, including networks using the same `192.168.1.0/24` subnet, it uses
-Tailscale. NetworkManager events update the routing state after connection
-changes; a systemd service also checks it at boot.
+Dirac accepts kaon's subnet route to reach the home LAN when away. On Linux,
+that route takes precedence over the local LAN, so turn Tailscale off at home
+and on when away:
 
-The gateway identity is set by `tailscale_home_gateway` and
-`tailscale_home_gateway_mac` in `host_vars/dirac.yaml`. Update these when the
-home router changes. Clients without a configured identity always use
-Tailscale. The helper reserves IPv4 rule priority 2500 and routing table 2500
-and removes obsolete state without needing the old subnet configuration.
+```bash
+tailscale down   # at home
+tailscale up     # away
+```
 
-Run `just check` for static checks and routing regression tests. The tests
-simulate network changes without modifying the host's routing table.
+If Tailscale is left up at home, home LAN traffic still works but passes
+through kaon.
 
 ## NAS client mounts
 

@@ -49,8 +49,8 @@
   become: true
   when: tailscale_subnet_router
 
-- name: Configure direct routing on the home LAN
-  ansible.builtin.import_tasks: lan-direct.yaml
+- name: Remove direct routing on the home LAN
+  ansible.builtin.import_tasks: lan-direct-cleanup.yaml
   when: not tailscale_subnet_router
 
 - name: Ensure tailscaled is running

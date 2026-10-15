@@ -9,23 +9,6 @@ dependencies = [
     "yamllint>=1.35",
 ]
 
-[dependency-groups]
-dev = [
-    "pytest>=8",
-    "ruff>=0.14",
-]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-
-[tool.ruff]
-# The routing helper runs on target system Pythons, including Python 3.9.
-target-version = "py39"
-line-length = 100
-
-[tool.ruff.lint]
-extend-select = ["I"]
-
 [tool.uv]
 # Run Ansible on a uv-managed interpreter, never the system Python.
 python-preference = "only-managed"
