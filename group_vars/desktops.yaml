@@ -6,11 +6,17 @@ dotfiles_profile: default
 ansible_python_interpreter: /usr/bin/python3
 
 nas_ip: 192.168.1.10
-nas_home_mounts:
-  - src: "/homes/{{ user }}"
+desktop_nas_mounts:
+  - src: "//{{ nas_ip }}/homes/{{ user }}"
     path: "/home/{{ user }}/synology"
-  - src: "/homes/{{ user }}/Documents"
+  - src: "//{{ nas_ip }}/homes/{{ user }}/Documents"
     path: "/home/{{ user }}/Documents"
+  - src: "//{{ nas_ip }}/backups"
+    path: /mnt/synology/backups
+  - src: "//{{ nas_ip }}/media"
+    path: /mnt/synology/media
+  - src: "//{{ nas_ip }}/games"
+    path: /mnt/synology/games
 
 smb_password: !vault |
           $ANSIBLE_VAULT;1.1;AES256

@@ -1,4 +1,9 @@
 ---
+- name: Reload desktop systemd
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+  become: true
+
 - name: Apply netplan
   ansible.builtin.command:
     cmd: netplan apply

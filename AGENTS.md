@@ -6,7 +6,6 @@ This file provides guidance to AI coding agents. Gemini.md is a symlink to this 
 
 ```bash
 just sync              # Install Python deps via uv
-just lint              # yamllint + ansible-lint
 just lint              # yamllint + ansible-lint (read-only)
 just syntax-check      # Parse every play without touching a host
 just check             # Everything CI runs: lint + syntax-check
@@ -124,14 +123,44 @@ driver 595 or newer; driver 580 predates Blackwell and will not work.
 
 Tailscale runs as a client on hosts with `tailscale_enabled: true` (dirac, the
 laptop; einstein stays on the home LAN and is reached through kaon's subnet
-route). The role accepts kaon's routes and installs
-`tailscale-lan-direct.service`, an `ip rule` that keeps `home_lan_subnet`
-traffic on the local network when dirac is at home. Login is manual, as on
-kaon: `sudo tailscale up` on dirac, then re-run the playbook. Leave key expiry
-on for the laptop. Do not run Tailscale and the WireGuard client at the same
-time: WireGuard's `AllowedIPs` is `0.0.0.0/0`.
+route). The role accepts kaon's routes. On Linux those routes take
+precedence over the local LAN, so at home `home_lan_subnet` traffic goes
+through kaon while Tailscale is up. Run `tailscale down` at home and
+`tailscale up` away; the operator setting allows both without sudo. Do not
+add automatic home-network detection: an earlier gateway-MAC helper was
+removed in favor of this manual toggle. The role removes that helper's
+service, files, and dispatcher hook from clients; stopping the service
+deletes its IPv4 rule and routing table, both numbered 2500.
 
-NAS home shares are mounted over CIFS with `ansible.posix.mount`. **Check that
-the target path is already a mount point before running:** if
+Login is manual, as on kaon: `sudo tailscale up` on dirac, then re-run the
+playbook. Leave key expiry on for the laptop. Do not run Tailscale and the
+WireGuard client at the same time: WireGuard's `AllowedIPs` is `0.0.0.0/0`.
+
+All five NAS shares use the same CIFS automount policy on both desktops.
+`desktop_nas_mounts` in `group_vars/desktops.yaml` is the shared list, and
+`desktop_nas_mount_options` in the desktop role defaults supplies `soft`,
+`nofail`, systemd automounting, a 10-second mount-command timeout, and a
+60-second idle timeout. VPN and offline use must not require host-specific
+mount logic. The mount timeout does not limit ongoing file operations.
+
+`seal` requires SMB3 encryption on every NAS mount. A laptop on a foreign
+network that also uses `home_lan_subnet` can reach a different host at
+`nas_ip`. That host cannot derive the encryption keys without the password,
+so the mount fails rather than exchanging file data with it. Keep `seal`
+client-side: a DSM setting that requires encryption does not stop a fake
+server.
+
+**Check the target paths before applying:** if
 `/home/agude/Documents` holds local files and the NAS mounts over it, those
 files are shadowed — still on disk, but inaccessible until unmount.
+
+NAS tasks in `roles/desktop/tasks/nas.yaml` use `ansible.posix.mount` with
+`state: present` so provisioning does not require NAS connectivity. They
+remove the old NetworkManager retry hook and start automount units only for
+shares that are not already mounted. Active mounts migrate on the next
+normal reboot; do not force an unmount. Local disk mounts, such as
+Einstein's Windows partitions, are not managed by Ansible; the role fails
+rather than replace an fstab entry whose type is not `cifs` or `nfs`. This
+changes Einstein's previous
+NFS4 `backups` and `media` mounts to CIFS. Apply with
+`just apply <host> -c local -K --tags nas` on the corresponding host.

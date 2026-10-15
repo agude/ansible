@@ -1,8 +1,5 @@
 ---
-- name: Restart home LAN routing rule service
-  ansible.builtin.systemd:
-    name: tailscale-lan-direct.service
-    state: restarted
+- name: Reload tailscale systemd
+  ansible.builtin.systemd_service:
     daemon_reload: true
   become: true
-  listen: tailscale_restart_lan_direct

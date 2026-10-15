@@ -68,6 +68,65 @@ set of tools for specific machines. Ollama remains limited to `einstein`.
 | pi | pis | Docker for GitOps container management |
 | tailscale | pis; desktops, when enabled | Tailscale subnet router and exit node (pis) or client (desktops) |
 
+## Tailscale client routing
+
+Dirac accepts kaon's subnet route to reach the home LAN when away. On Linux,
+that route takes precedence over the local LAN, so turn Tailscale off at home
+and on when away:
+
+```bash
+tailscale down   # at home
+tailscale up     # away
+```
+
+If Tailscale is left up at home, home LAN traffic still works but passes
+through kaon.
+
+## NAS client mounts
+
+Einstein and Dirac use the same five CIFS shares and mount policy, defined
+in `group_vars/desktops.yaml` and `roles/desktop/defaults/main.yaml`:
+
+| Mount point | NAS share |
+|---|---|
+| `~/synology` | `homes/agude` |
+| `~/Documents` | `homes/agude/Documents` |
+| `/mnt/synology/backups` | `backups` |
+| `/mnt/synology/media` | `media` |
+| `/mnt/synology/games` | `games` |
+
+Systemd mounts each share on first access. `nofail` allows boot to continue
+when the NAS is unavailable, and `x-systemd.mount-timeout=10s` limits new
+mount attempts. After 60 seconds of inactivity, systemd attempts to unmount
+the share; busy shares stay mounted. CIFS `soft` returns errors after network
+retries rather than retrying indefinitely. The 10-second limit applies to
+the mount command, not ongoing file operations.
+
+`seal` requires SMB3 encryption. It protects NAS traffic on the home LAN and
+makes the mount fail against a host that answers at the NAS IP on another
+network, because that host cannot derive the encryption keys without the
+password. To confirm encryption on a mounted share, run
+`grep -A3 Encrypt /proc/fs/cifs/DebugData`.
+
+The same NAS IP is used on the home LAN and through a VPN with a route to
+the home LAN. If the NAS cannot be reached, access fails; accessing the path
+again retries once connectivity is restored. No network dispatcher hook is
+needed. Ansible removes the earlier `90-synology-mounts` retry hook.
+
+Ansible writes fstab entries without contacting the NAS and starts the
+automount units for shares that are not already mounted. Existing mounts
+stay active; reboot after applying to migrate them to the shared policy.
+On Einstein, this also switches `backups` and `media` from NFS4 to CIFS.
+
+Before applying, check that the NAS paths contain no local files that would
+be hidden by a mount. To apply only the NAS configuration on Einstein:
+
+```bash
+just apply einstein -c local -K --tags nas
+```
+
+On Dirac, run `just apply dirac -c local -K --tags nas` instead.
+
 ## Synology
 
 The Synology NAS is in the inventory but has no playbook role. Set up

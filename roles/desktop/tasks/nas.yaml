@@ -1,0 +1,103 @@
+---
+- name: Install cifs-utils for NAS mounts
+  ansible.builtin.apt:
+    name: cifs-utils
+    state: present
+  become: true
+
+- name: Create SMB credentials file
+  ansible.builtin.copy:
+    dest: "/root/.{{ user }}_smb_credentials"
+    content: |
+      username={{ user }}
+      password={{ smb_password }}
+    owner: root
+    group: root
+    mode: "0600"
+  become: true
+  no_log: true
+
+# ansible.posix.mount replaces any fstab entry with the same path. Never let a
+# NAS mount overwrite a local disk entry, such as Einstein's Windows partitions.
+- name: Read existing fstab entries for NAS mount paths
+  ansible.builtin.command:
+    argv:
+      - findmnt
+      - --fstab
+      - --noheadings
+      - --output
+      - FSTYPE
+      - --mountpoint
+      - "{{ item.path }}"
+  loop: "{{ desktop_nas_mounts }}"
+  loop_control:
+    label: "{{ item.path }}"
+  register: desktop_nas_fstab_entries
+  changed_when: false
+  failed_when: desktop_nas_fstab_entries.rc not in [0, 1]
+  check_mode: false
+
+- name: Refuse to replace local fstab entries
+  ansible.builtin.assert:
+    that: item.stdout_lines | difference(['cifs', 'nfs', 'nfs4']) | length == 0
+    fail_msg: >-
+      {{ item.item.path }} has a local fstab entry ({{ item.stdout }}).
+      Remove it from desktop_nas_mounts or move the local mount.
+    quiet: true
+  loop: "{{ desktop_nas_fstab_entries.results }}"
+  loop_control:
+    label: "{{ item.item.path }}"
+
+- name: Configure NAS automounts
+  ansible.posix.mount:
+    src: "{{ item.src }}"
+    path: "{{ item.path }}"
+    fstype: cifs
+    opts: "{{ desktop_nas_mount_options }}"
+    boot: false
+    state: present
+  loop: "{{ desktop_nas_mounts }}"
+  become: true
+  notify: Reload desktop systemd
+
+- name: Remove legacy NAS mount retry hook
+  ansible.builtin.file:
+    path: /etc/NetworkManager/dispatcher.d/90-synology-mounts
+    state: absent
+  become: true
+
+- name: Get NAS automount unit names
+  ansible.builtin.command:
+    argv: >-
+      {{ ['systemd-escape', '--path', '--suffix=automount']
+         + (desktop_nas_mounts | map(attribute='path') | list) }}
+  register: desktop_nas_automount_units
+  changed_when: false
+  check_mode: false
+
+- name: Check for active NAS mounts
+  ansible.builtin.command:
+    argv:
+      - systemctl
+      - is-active
+      - "{{ item | regex_replace('[.]automount$', '.mount') }}"
+  loop: "{{ desktop_nas_automount_units.stdout.split() }}"
+  register: desktop_nas_active_mounts
+  changed_when: false
+  failed_when: desktop_nas_active_mounts.rc not in [0, 3, 4]
+  check_mode: false
+
+# An automount cannot start over an active filesystem. Migrate those on reboot.
+# In check mode, the new fstab entries have not generated their units yet.
+- name: Start NAS automounts for unmounted shares
+  ansible.builtin.systemd_service:
+    name: "{{ item.item }}"
+    state: started
+    daemon_reload: true
+  loop: "{{ desktop_nas_active_mounts.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when:
+    - item.stdout in ['inactive', 'failed', 'unknown']
+    - not ansible_check_mode
+  become: true
